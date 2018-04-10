@@ -7,7 +7,7 @@ openpyxl==2.5.2
 PyYAML==3.12
 records==0.5.2
 Shapely==1.6.4.post1
-psycopg2-binary==-2.7.4
+psycopg2-binary==2.7.4
 SQLAlchemy==1.2.6
 tablib==0.12.1
 unicodecsv==0.14.1
