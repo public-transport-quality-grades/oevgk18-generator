@@ -1,3 +1,7 @@
+from generator.business import rating_generator
 
 def main():
-    print("Executed main of generator")
+    rating_generator.start()
+
+if __name__ == "__main__":
+    main()
