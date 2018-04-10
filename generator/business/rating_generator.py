@@ -1,5 +1,6 @@
-from generator.injector import user_input_interface, osm_service
+from generator.injector import registry
 
 
 def start():
-    user_input_interface.foo()
+    cli = registry['ui']
+    cli.foo()
