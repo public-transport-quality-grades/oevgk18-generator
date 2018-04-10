@@ -1,6 +1,4 @@
-from generator.injector import registry
 
-
-def start():
+def start(registry, params):
     cli = registry['ui']
-    cli.foo()
+    cli.parse_params(params)

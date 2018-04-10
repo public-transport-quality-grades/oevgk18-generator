@@ -1,3 +1,5 @@
+from typing import Dict
 
-def foo():
-    print("called cli.foo()")
+
+def parse_params(params: Dict):
+    print(f"parsing parameters {params}")
