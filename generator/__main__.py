@@ -1,10 +1,12 @@
 from generator.business import rating_generator
 from generator.ui import cli
+from generator.integration import osm_service
 
 
 def wire():
     registry = dict()
-    registry["ui"] = cli
+    registry['ui'] = cli
+    registry['osm_service'] = osm_service
     return registry
 
 
