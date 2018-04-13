@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+  db:
+    build: 
+      context: ./db
+      dockerfile: Dockerfile.db
+    ports:
+    - "5432:5432"
+    environment:
+      POSTGRES_USER: "test"
+      POSTGRES_PASSWORD: "test"
+      POSTGRES_DB: "oevgk18"
+    volumes:
+      - sql-import:/sql-import
+  tooling:
+    build:
+      context: ./tooling
+      dockerfile: Dockerfile.tooling
+    volumes:
+      - ./tooling/osm-data:/osm-data
+      - ./tooling/terrain-data:/terrain-data
+      - sql-import:/sql-import
+    depends_on: [db]
+
+volumes:
+  sql-import:

@@ -1,0 +1,14 @@
+FROM alpine:3.7
+
+RUN wget http://osm2po.de/releases/osm2po-5.2.43.zip
+RUN unzip osm2po-5.2.43.zip
+
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk update \
+    && apk add -u postgresql-client \
+    && apk add -u postgis \
+    && apk add -u openjdk8 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY ./scripts ./scripts
+COPY ./osm-data/osm2po-config .
