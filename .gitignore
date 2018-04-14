@@ -100,7 +100,11 @@ ENV/
 # mypy
 .mypy_cache/
 
-#pytest
+# pytest
 .pytest_cache
 
-.idea
+# IDE
+.idea/
+
+# ignore tif files because of licence reasons
+*.tif
