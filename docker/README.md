@@ -33,7 +33,7 @@ docker-compose run tooling ./scripts/generate-gtfs-data.sh
 docker-compose run db ./scripts/import-gtfs-data.sh
 ```
 
-## updating height data
+## updating terrain data
 
 Make sure that the terrain-file is placed under /docker/tooling/terrain-data.
 
