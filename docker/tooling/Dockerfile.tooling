@@ -22,4 +22,6 @@ RUN mkdir -p /opt/osmosis \
     && ln -s /opt/osmosis/bin/osmosis /usr/local/bin/osmosis
 
 
-COPY ./scripts ./scripts
+COPY ./scripts /scripts
+
+ENV PATH="/scripts:${PATH}"
