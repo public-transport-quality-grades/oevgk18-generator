@@ -1,9 +1,20 @@
-import records
+from generator.business import rating_generator
+from generator.ui import cli
+from generator.integration import osm_service
+
+
+def wire():
+    registry = dict()
+    registry['ui'] = cli
+    registry['osm_service'] = osm_service
+    return registry
+
 
 def main():
-    db = records.Database('postgresql://test:test@db:5432/oevgk18')
-    rows = db.query('select * from person;')
-    for r in rows:
-        print(r.id, r.name)
+    input_params = ['some', 'params']
+    registry = wire()
+    rating_generator.start(registry, input_params)
 
-main()
+
+if __name__ == "__main__":
+    main()
