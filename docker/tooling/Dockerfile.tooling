@@ -1,8 +1,5 @@
 FROM alpine:3.7
 
-RUN wget http://osm2po.de/releases/osm2po-5.2.43.zip
-RUN unzip osm2po-5.2.43.zip
-
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 RUN apk update \
     && apk add -u postgresql-client \
@@ -10,5 +7,19 @@ RUN apk update \
     && apk add -u openjdk8 \
     && rm -rf /var/lib/apt/lists/*
 
+
+RUN mkdir -p /opt/osm2po \
+    && wget "http://osm2po.de/releases/osm2po-5.2.43.zip" \
+    && unzip osm2po-5.2.43.zip -d /opt/osm2po \
+    && rm osm2po-5.2.43.zip
+COPY ./osm-data/osm2po-config /opt/osm2po
+
+
+RUN mkdir -p /opt/osmosis \
+    && wget "http://bretth.dev.openstreetmap.org/osmosis-build/osmosis-0.45.tgz" \
+    && tar zxvf osmosis-0.45.tgz -C /opt/osmosis/ \
+    && rm osmosis-0.45.tgz \
+    && ln -s /opt/osmosis/bin/osmosis /usr/local/bin/osmosis
+
+
 COPY ./scripts ./scripts
-COPY ./osm-data/osm2po-config .
