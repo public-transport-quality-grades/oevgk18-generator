@@ -1,12 +1,12 @@
 from generator.business import rating_generator
 from generator.ui import cli
-from generator.integration import osm_service
+from generator.integration import ptstop_service
 
 
-def wire():
+def wire() -> dict:
     registry = dict()
     registry['ui'] = cli
-    registry['osm_service'] = osm_service
+    registry['ptstop_service'] = ptstop_service
     return registry
 
 

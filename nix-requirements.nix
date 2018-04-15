@@ -25,13 +25,19 @@ with import <nixpkgs> {}; let
         sha256 = "06ihcb8839zzgk5jcv18kc6nqld4hhj3nk4f3drzcr8n8893v1y8";
       };
     };
+  generator = with python36.pkgs;
+    buildPythonPackage {
+      name = "generator";
+      doCheck = false;
+      src = ./.;
+      propagatedBuildInputs = [ geojson shapely records ];
+    };
+
 in
 (python3.withPackages (
   pkgs: with pkgs;
   [
-    records
-    shapely
-    geojson
+    generator
 
     # dev requirements
     pytest
