@@ -27,10 +27,10 @@ def _map_transport_stop(uic_ref: str, rows: Iterable[Record]) -> TransportStop:
     platforms = list()
     uic_name = "undefined"
     for row in rows:
-        if 'uic_name' in row.tags:
-            uic_name = row.tags['uic_name']
-        osm_id = row.id
-        node_geom = geometry_parser.parse_point_geometry(row.geom)
+        if 'uic_name' in row['tags']:
+            uic_name = row['tags']['uic_name']
+        osm_id = row['id']
+        node_geom = geometry_parser.parse_point_geometry(row['geom'])
         platforms.append(TransportPlatform(osm_id, node_geom))
 
-    return TransportStop(uic_ref, uic_name, platforms)
+    return TransportStop(uic_name, uic_ref, platforms)
