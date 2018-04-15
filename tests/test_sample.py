@@ -1,6 +1,6 @@
 import pytest
-from .context.generator import __main__
+from .context import generator
 
 def test_main():
-    __main__.main()
+    generator.__main__.main()
     assert True
