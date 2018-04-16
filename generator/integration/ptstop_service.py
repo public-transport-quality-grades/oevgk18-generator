@@ -19,8 +19,8 @@ def get_transport_stop_from_uic_ref(db: Database, uic_ref: str) -> TransportStop
     return _map_transport_stop(uic_ref, pt_stop_rows)
 
 
-def _query_transport_stop_node(db_connection: Database, uic_ref: str):
-    return db_connection.query("SELECT id, tags, geom FROM pt_stop WHERE tags -> 'uic_ref' = :uic_ref", uic_ref=uic_ref)
+def _query_transport_stop_node(db: Database, uic_ref: str):
+    return db.query("SELECT id, tags, geom FROM pt_stop WHERE tags -> 'uic_ref' = :uic_ref", uic_ref=uic_ref)
 
 
 def _map_transport_stop(uic_ref: str, rows: Iterable[Record]) -> TransportStop:
