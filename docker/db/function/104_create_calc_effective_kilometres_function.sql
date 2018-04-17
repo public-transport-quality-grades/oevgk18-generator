@@ -32,7 +32,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION calc_effective_kilometres() RETURNS VOID AS $$
 BEGIN
-  UPDATE routing SET cost_effective = get_effective_kilometres(id);
+  UPDATE routing SET cost_effective = get_effective_kilometres(id) WHERE relevant IS TRUE;
 END;
 $$ LANGUAGE plpgsql;
 
