@@ -1,0 +1,2 @@
+CREATE EXTENSION pgrouting;
+CREATE EXTENSION hstore;

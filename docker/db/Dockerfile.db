@@ -1,9 +1,11 @@
 FROM starefossen/pgrouting
 
-RUN /bin/bash -c 'mv /docker-entrypoint-initdb.d/postgis.sh /docker-entrypoint-initdb.d/00_postgis.sh'
+RUN /bin/bash -c 'mv /docker-entrypoint-initdb.d/postgis.sh /docker-entrypoint-initdb.d/000_postgis.sh'
 RUN /bin/bash -c 'rm /docker-entrypoint-initdb.d/routing.sh'
 
 COPY ./schema/* /docker-entrypoint-initdb.d/
+COPY ./function/* /docker-entrypoint-initdb.d/
+COPY ./post-import-sql/ /post-import-sql/
 
 COPY ./scripts /scripts
 
