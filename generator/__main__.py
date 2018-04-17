@@ -1,12 +1,13 @@
 from generator.business import rating_generator
 from generator.ui import cli
-from generator.integration import ptstop_service
+from generator.integration import ptstop_service, routing_engine_service
 
 
 def wire() -> dict:
     registry = dict()
     registry['ui'] = cli
     registry['ptstop_service'] = ptstop_service
+    registry['routing_engine_service'] = routing_engine_service
     return registry
 
 
