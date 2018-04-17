@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, List
 from contextlib import contextmanager
 from records import Database, Record
 from . import geometry_parser
@@ -12,6 +12,15 @@ def db_connection():
     connection = Database(config.PTSTOP_DB_CONNECTION)
     yield connection
     connection.close()
+
+
+def get_transport_stops(db: Database) -> List[TransportStop]:
+    pt_stop_rows = _query_transport_stop_nodes(db)
+    return [_map_transport_stop(pt_stop_row.tags['uic_ref'], pt_stop_rows) for pt_stop_row in pt_stop_rows]
+
+
+def _query_transport_stop_nodes(db: Database):
+    return db.query("SELECT id, tags, geom FROM pt_stop WHERE tags -> 'uic_ref' IS NOT NULL")
 
 
 def get_transport_stop_from_uic_ref(db: Database, uic_ref: str) -> TransportStop:
