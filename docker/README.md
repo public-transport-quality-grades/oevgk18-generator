@@ -15,17 +15,6 @@ docker-compose run tooling generate-osm-data.sh /osm-data/<osm-file>
 docker-compose run db import-osm-data.sh
 ```
 
-## updating public transport stop data
-
-Make sure that the osm-file is placed under `docker/tooling/osm-data`.
-
-``` bash
-docker-compose run tooling generate-pt-stop-data.sh /osm-data/<osm-file>
-docker-compose run db import-pt-stop-data.sh
-```
-
-
-
 ## updating gtfs data
 
 ``` bash

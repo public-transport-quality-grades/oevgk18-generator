@@ -1,5 +1,3 @@
-create extension hstore;
-
 DROP TABLE IF EXISTS pt_stop;
 
 -- Create a table for pt_stop.
