@@ -2,7 +2,7 @@ from typing import List
 from .model.transport_stop import TransportStop
 
 
-def transport_stops(registry) -> List[TransportStop]:
+def transport_stops(registry) -> List[str]:
     ptstop_service = registry['ptstop_service']
     with ptstop_service.db_connection() as db:
         return list(ptstop_service.get_transport_stops(db))

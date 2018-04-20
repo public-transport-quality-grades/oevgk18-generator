@@ -1,6 +1,8 @@
+import time
+
 from generator.business import rating_generator
 from generator.ui import cli
-from generator.integration import ptstop_service, routing_engine_service
+from generator.integration import ptstop_service, routing_engine_service, timetable_service
 
 
 def wire() -> dict:
@@ -8,6 +10,7 @@ def wire() -> dict:
     registry['ui'] = cli
     registry['ptstop_service'] = ptstop_service
     registry['routing_engine_service'] = routing_engine_service
+    registry['timetable_service'] = timetable_service
     return registry
 
 
@@ -18,4 +21,6 @@ def main():
 
 
 if __name__ == "__main__":
+    start = time.time()
     main()
+    print(time.time() - start)
