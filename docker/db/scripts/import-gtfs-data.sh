@@ -17,3 +17,5 @@ psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -q "$POSTGRES_DB" -h db <<-EOSQL
     \copy transfers from sql-import/gtfs-data/transfers.txt with csv header
     \copy frequencies from sql-import/gtfs-data/frequencies.txt with csv header
 EOSQL
+
+cat /post-import-sql/gtfs-import/* | psql -U "$POSTGRES_USER" -q "$POSTGRES_DB" -h db -f -
