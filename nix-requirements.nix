@@ -30,7 +30,13 @@ with import <nixpkgs> {}; let
       name = "generator";
       doCheck = false;
       src = ./.;
-      propagatedBuildInputs = [ geojson shapely records ];
+      propagatedBuildInputs = [
+        geojson
+        shapely
+        records
+        jsonschema
+        ruamel_yaml
+      ];
     };
 
 in
