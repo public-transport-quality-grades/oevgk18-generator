@@ -4,12 +4,11 @@ from records import Database, Record
 from . import geometry_parser
 from ..business.model.transport_stop import TransportStop
 from ..business.model.transport_platform import TransportPlatform
-from .. import config
 
 
 @contextmanager
-def db_connection():
-    connection = Database(config.PTSTOP_DB_CONNECTION)
+def db_connection(db_config: dict):
+    connection = Database(db_config['public-transport-stops'])
     yield connection
     connection.close()
 
