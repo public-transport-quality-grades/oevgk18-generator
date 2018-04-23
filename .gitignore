@@ -106,5 +106,9 @@ ENV/
 # IDE
 .idea/
 
-# ignore tif files because of licence reasons
+# terrain model
 *.tif
+
+# osm-files
+*.osm
+*.pbf

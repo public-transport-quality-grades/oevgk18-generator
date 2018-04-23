@@ -2,8 +2,8 @@
 
 mkdir pgimport
 
-osmosis --read-xml $1 \
-    --tf accept-nodes public_transport=stop_position highway=bus_stop \
+osmosis --read-pbf $1 \
+    --tf accept-nodes uic_ref=*\
     --tf reject-ways \
     --tf reject-relations \
     --write-pgsql-dump

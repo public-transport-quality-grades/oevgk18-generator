@@ -1,9 +1,5 @@
-CREATE OR REPLACE FUNCTION min_distance(pt_stop GEOMETRY) RETURNS INTEGER AS $$
-    SELECT routing.source FROM routing
-        ORDER BY ST_Distance(
-            ST_StartPoint(routing.geom_way),
-            ST_SetSRID(pt_stop, 4326),
-            true
-        ) ASC
-        LIMIT 1
+CREATE OR REPLACE FUNCTION get_source(pt_stop_geom GEOMETRY) RETURNS INTEGER AS $$
+   SELECT routing.source FROM routing
+	      ORDER BY geom_way <-> pt_stop_geom
+	      LIMIT 1;
 $$ LANGUAGE sql;
