@@ -5,7 +5,7 @@ import jsonschema
 
 DEFAULT_CONFIG = """
 database-connections:
-    - public-transport-stops: "postgres://test:test@localhost:5432/oevgk18"
+    public-transport-stops: "postgres://test:test@localhost:5432/oevgk18"
 
 due-dates:
     - type-of-day: "Working Day"
@@ -149,18 +149,14 @@ SCHEMA = {
   "properties": {
     "database-connections": {
       "$id": "/properties/database-connections",
-      "type": "array",
-      "items": {
-        "$id": "/properties/database-connections/items",
-        "type": "object",
-        "properties": {
-          "public-transport-stops": {
-              "type": "string"
-          }
-        },
-        "additionalProperties": False,
-        "required": ["public-transport-stops"]
-      }
+      "type": "object",
+      "properties": {
+        "public-transport-stops": {
+            "type": "string"
+        }
+      },
+      "additionalProperties": False,
+      "required": ["public-transport-stops"]
     },
     "due-dates": {
       "$id": "/properties/due-dates",
