@@ -45,7 +45,7 @@ due-dates:
       upper-bound: '04:00'
 
 public-transport-types:
-    train-node-min-directions: 6 # Minimum amount of directions for a train station to be called a train node ("Bahnknoten")
+    train-junction-min-directions: 6 # Minimum amount of directions for a train station to be called a train junction ("Bahnknoten")
 
 transport-stop-categories:
     - max-interval: 300 # seconds
@@ -195,13 +195,13 @@ SCHEMA = {
       "$id": "/properties/public-transport-types",
       "type": "object",
       "properties": {
-        "train-node-min-directions": {
-          "$id": "/properties/public-transport-types/properties/train-node-min-directions",
+        "train-junction-min-directions": {
+          "$id": "/properties/public-transport-types/properties/train-junction-min-directions",
           "type": "integer"
         }
       },
       "additionalProperties": False,
-      "required": ["train-node-min-directions"]
+      "required": ["train-junction-min-directions"]
 
     },
     "transport-stop-categories": {
