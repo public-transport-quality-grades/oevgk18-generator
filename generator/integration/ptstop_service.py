@@ -20,7 +20,7 @@ def get_transport_stops(db: Database) -> List[str]:
 
 
 def _query_transport_stop_nodes(db: Database):
-    return db.query("SELECT distinct tags -> 'uic_ref' as uic_ref FROM pt_stop WHERE tags -> 'uic_ref' IS NOT NULL;")
+    return db.query("SELECT distinct tags -> 'uic_ref' as uic_ref FROM pt_stop;")
 
 
 def get_transport_stop_from_uic_ref(db: Database, uic_ref: str) -> TransportStop:

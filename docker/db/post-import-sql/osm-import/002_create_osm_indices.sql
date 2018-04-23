@@ -1,0 +1,1 @@
+CREATE INDEX ON routing USING GIST (geom_way);
