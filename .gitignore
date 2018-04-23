@@ -112,3 +112,6 @@ ENV/
 # osm-files
 *.osm
 *.pbf
+
+# config
+generator_config.yaml

@@ -18,5 +18,8 @@ def test_calculate_transport_stop_rating(uic_ref, expected):
 
 def _mock_registry():
     return {
-        'timetable_service': mock_timetable_service
+        'timetable_service': mock_timetable_service,
+        'config': {
+            'database-connections': {}
+        }
     }

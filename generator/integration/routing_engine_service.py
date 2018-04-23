@@ -1,11 +1,10 @@
 from contextlib import contextmanager
 from records import Database
-from .. import config
 
 
 @contextmanager
-def db_connection():
-    connection = Database(config.PTSTOP_DB_CONNECTION)
+def db_connection(db_config: dict):
+    connection = Database(db_config['public-transport-stops'])
     yield connection
     connection.close()
 
