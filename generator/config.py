@@ -48,41 +48,41 @@ public-transport-types:
     train-node-min-directions: 6 # Minimum amount of directions for a train station to be called a train node ("Bahnknoten")
 
 transport-stop-categories:
-    - max-interval: '04:59'
+    - max-interval: 300 # seconds
       transport-type-mappings:
           - A: 1 # i.e. types of transports in category A are in transport stop category I
           - B: 1
           - C: 2
 
-    - min-interval: '05:00'
-      max-interval: '10:59'
+    - min-interval: 301
+      max-interval: 600
       transport-type-mappings:
           - A: 1
           - B: 2
           - C: 3
 
-    - min-interval: '11:00'
-      max-interval: '19:59'
+    - min-interval: 601
+      max-interval: 1200
       transport-type-mappings:
           - A: 2
           - B: 3
           - C: 4
     
-    - min-interval: '20:00'
-      max-interval: '39:59'
+    - min-interval: 1201
+      max-interval: 2400
       transport-type-mappings:
           - A: 3
           - B: 4
           - C: 5
     
-    - min-interval: '40:00'
-      max-interval: '60:00'
+    - min-interval: 2401
+      max-interval: 3600
       transport-type-mappings:
           - A: 4
           - B: 5
           - C: 6
     
-    - min-interval: '60:01'
+    - min-interval: 3601
       transport-type-mappings:
           - B: 7
           - C: 7
@@ -128,8 +128,12 @@ SCHEMA = {
   "type": "object",
   "definitions": {
       "time-string": {
-            "type": "string",
-            "pattern": "^\d{2}:\d{2}$"
+          "type": "string",
+          "pattern": "^\d{2}:\d{2}$"
+      },
+      "transport-stop-interval": {
+          "type": "integer",
+          "minimum": 0
       },
       "pt-stop-category": {
           "type": "integer",
@@ -213,11 +217,11 @@ SCHEMA = {
         "properties": {
           "max-interval": {
             "$id": "/properties/transport-stop-categories/items/properties/max-interval",
-            "$ref": "#/definitions/time-string"
+            "$ref": "#/definitions/transport-stop-interval"
           },
           "min-interval": {
             "$id": "/properties/transport-stop-categories/items/properties/max-interval",
-            "$ref": "#/definitions/time-string"
+            "$ref": "#/definitions/transport-stop-interval"
           },
           "transport-type-mappings": {
             "$id": "/properties/transport-stop-categories/items/properties/transport-type-mappings",
