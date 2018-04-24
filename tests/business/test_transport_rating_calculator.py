@@ -20,6 +20,9 @@ def _mock_registry():
     return {
         'timetable_service': mock_timetable_service,
         'config': {
-            'database-connections': {}
+            'database-connections': {},
+            'public-transport-types': {
+                'train-junction-min-directions': 6
+            }
         }
     }
