@@ -21,16 +21,27 @@ def get_count_of_distinct_next_stops(db_config: dict, uic_ref: str) -> int:
         return len(rows)
 
 
-def get_departure_times(db: Database, uic_ref: str, due_date: datetime) -> List[datetime]:
+def prepare_calendar_table(db: Database, due_date: datetime):
+    """Create a temporary table to use in get_departure_times for a specific date, only valid in the same
+    database connection context"""
+    print("Create temporary table")
     due_date_gtfs: str = _format_gtfs_date(due_date)
-    rows = db.query("""SELECT st.departure_time FROM stop_times st
-                INNER JOIN stops s on st.stop_id = s.stop_id
-                INNER JOIN trips t ON st.trip_id = t.trip_id
-                INNER JOIN calendar_dates c ON t.service_id = c.service_id
-                WHERE (st.stop_id = :uic_ref OR s.parent_station = :uic_ref) AND c.date = :date
-                ORDER BY st.departure_time;""", uic_ref=uic_ref, date=due_date_gtfs).all()
+    db.query("""CREATE TEMP TABLE calendar_trip_mapping AS
+                    SELECT st.departure_time, st.stop_id FROM stop_times st
+                        INNER JOIN trips t ON st.trip_id = t.trip_id
+                        INNER JOIN calendar_dates c ON t.service_id = c.service_id
+                        WHERE c.date = :date""", date=due_date_gtfs)
+    # db.query("CREATE INDEX ON calendar_trip_mapping(stop_id)")
+    # db.query("CREATE INDEX ON calendar_trip_mapping(departure_time)")
+    # db.query("VACUUM ANALYZE calendar_trip_mapping")
+    # TODO: VACUUM can't be executed here, therefore indices don't work properly
 
-    return list(map(lambda row: _parse_departure_times(row, due_date), rows))
+
+def get_departure_times(db: Database, uic_ref: str, due_date: datetime) -> List[datetime]:
+    rows = db.query("""SELECT departure_time FROM calendar_trip_mapping
+                WHERE stop_id like :uic_ref
+                ORDER BY departure_time;""", uic_ref=f"{uic_ref}%").all()
+    return list(map(lambda row: _combine_departure_time(row, due_date), rows))
 
 
 def _format_gtfs_date(due_date: datetime) -> str:
@@ -38,12 +49,7 @@ def _format_gtfs_date(due_date: datetime) -> str:
     return f"{due_date.year}{due_date.month:02d}{due_date.day:02d}"
 
 
-def _parse_departure_times(row: dict, due_date: datetime) -> datetime:
-    """convert row of departure time with format hh:mm:ss to time object"""
-    hours, minutes, seconds = row['departure_time'].split(':')
-    if hours == '24':
-        # GTFS uses 24 as midnight, but python only knows 0..23, so we need to add one day
-        due_date += timedelta(days=1)
-        hours = 0
-
-    return due_date.replace(hour=hours, minute=minutes, second=seconds)
+def _combine_departure_time(row: dict, due_date: datetime) -> datetime:
+    """convert row of departure time with due date to form a complete datetime object """
+    departure_time: timedelta = row['departure_time']
+    return due_date + departure_time

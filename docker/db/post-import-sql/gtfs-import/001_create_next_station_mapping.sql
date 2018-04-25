@@ -4,6 +4,8 @@ CREATE INDEX ON stop_times(trip_id);
 CREATE INDEX ON trips(trip_id);
 CREATE INDEX ON trips(route_id);
 CREATE INDEX ON routes(route_id);
+CREATE INDEX ON calendar_dates(service_id);
+
 
 DROP TABLE IF EXISTS next_station_mapping;
 CREATE TABLE next_station_mapping AS
