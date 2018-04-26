@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Optional
 from datetime import time, datetime, timedelta
 
 
@@ -18,28 +18,31 @@ def get_transport_stop_intervals(registry: dict, due_date_config: dict, uic_refs
 
 
 def _get_transport_stop_interval(db, timetable_service, uic_ref: str, due_date: datetime, start_time: datetime,
-                                 end_time: datetime) -> float:
+                                 end_time: datetime) -> Optional[float]:
     all_departures: List[datetime] = timetable_service.get_departure_times(db, uic_ref, due_date)
     if not all_departures:
         print(f"No departures for uic_ref {uic_ref}")
         return None
     interval = _calculate_transport_stop_interval(all_departures, start_time, end_time)
+    if not interval:
+        print(f"No departures in interval for uic_ref {uic_ref}")
+        return None
     print(f"{uic_ref}: {interval / 60} min")
     return interval
 
 
 def _calculate_transport_stop_interval(
-        all_departures: List[datetime], start_time: datetime, end_time: datetime) -> float:
+        all_departures: List[datetime], start_time: datetime, end_time: datetime) -> Optional[float]:
     departures: List[datetime] = list(filter(
         lambda t: _departure_time_inside_interval(t, start_time, end_time), all_departures))
-
-    if len(departures) == 1:
-        # if there is just one departure, duplicate it to use it as start and end
-        departures += departures
 
     if not departures:
         print(f"No departures in interval {start_time} - {end_time}")
         return None
+
+    if len(departures) == 1:
+        # if there is just one departure, duplicate it to use it as start and end
+        departures += departures
 
     interval_delta: timedelta = end_time - start_time
 
