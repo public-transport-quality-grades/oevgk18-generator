@@ -1,9 +1,13 @@
 from typing import List, Dict, Optional
 from datetime import time, datetime, timedelta
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_transport_stop_intervals(registry: dict, due_date_config: dict, uic_refs: List[str]) -> Dict[str, float]:
     """Calculate the departure interval in specified time bounds of public transport stops"""
+    logger.info("Calculate Transport stop intervals")
 
     timetable_service = registry['timetable_service']
     db_config = registry['config']['database-connections']
@@ -21,13 +25,13 @@ def _get_transport_stop_interval(db, timetable_service, uic_ref: str, due_date: 
                                  end_time: datetime) -> Optional[float]:
     all_departures: List[datetime] = timetable_service.get_departure_times(db, uic_ref, due_date)
     if not all_departures:
-        print(f"No departures for uic_ref {uic_ref}")
+        logger.debug(f"{uic_ref}: No departures found")
         return None
     interval = _calculate_transport_stop_interval(all_departures, start_time, end_time)
     if not interval:
-        print(f"No departures in interval for uic_ref {uic_ref}")
+        logger.debug(f"{uic_ref}: No departures in interval {start_time} - {end_time}")
         return None
-    print(f"{uic_ref}: {interval / 60} min")
+    logger.debug(f"{uic_ref}: Interval is {interval / 60} min")
     return interval
 
 
@@ -37,7 +41,6 @@ def _calculate_transport_stop_interval(
         lambda t: _departure_time_inside_interval(t, start_time, end_time), all_departures))
 
     if not departures:
-        print(f"No departures in interval {start_time} - {end_time}")
         return None
 
     if len(departures) == 1:

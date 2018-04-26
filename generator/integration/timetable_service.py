@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta
+import logging
 from typing import List
 from contextlib import contextmanager
 from records import Database
+
+logger = logging.getLogger(__name__)
 
 
 @contextmanager
@@ -23,6 +26,7 @@ def get_count_of_distinct_next_stops(db_config: dict, uic_ref: str) -> int:
 
 def prepare_calendar_table(db: Database, due_date: datetime):
     """Setup table to use in get_departure_times for a specific date"""
+    logger.debug(f"Setup temporary mapping table for {due_date}")
     due_date_gtfs: str = _format_gtfs_date(due_date)
     db.query("TRUNCATE calendar_trip_mapping;")
     db.query("""INSERT INTO calendar_trip_mapping(departure_time, stop_id)
