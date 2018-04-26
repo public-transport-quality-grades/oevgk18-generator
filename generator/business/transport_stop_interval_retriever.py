@@ -1,11 +1,12 @@
 from typing import List, Dict, Optional
 from datetime import time, datetime, timedelta
 import logging
+from .model.transport_stop import TransportStop
 
 logger = logging.getLogger(__name__)
 
 
-def get_transport_stop_intervals(registry: dict, due_date_config: dict, uic_refs: List[str]) -> Dict[str, float]:
+def get_transport_stop_intervals(registry: dict, due_date_config: dict, stops: List[TransportStop]) -> Dict[str, float]:
     """Calculate the departure interval in specified time bounds of public transport stops"""
     logger.info("Calculate Transport stop intervals")
 
@@ -17,8 +18,8 @@ def get_transport_stop_intervals(registry: dict, due_date_config: dict, uic_refs
 
     with timetable_service.db_connection(db_config) as db:
         timetable_service.prepare_calendar_table(db, due_date)
-        return {uic_ref: _get_transport_stop_interval(db, timetable_service, uic_ref, due_date, start_time, end_time)
-                for uic_ref in uic_refs}
+        return {stop.uic_ref: _get_transport_stop_interval(db, timetable_service, stop.uic_ref, due_date, start_time, end_time)
+                for stop in stops}
 
 
 def _get_transport_stop_interval(db, timetable_service, uic_ref: str, due_date: datetime, start_time: datetime,

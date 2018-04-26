@@ -30,14 +30,16 @@ def prepare_calendar_table(db: Database, due_date: datetime):
     due_date_gtfs: str = _format_gtfs_date(due_date)
     db.query("TRUNCATE calendar_trip_mapping;")
     db.query("""INSERT INTO calendar_trip_mapping(departure_time, stop_id)
-                    SELECT st.departure_time, st.stop_id FROM stop_times st
+                    SELECT st.departure_time, st.stop_id 
+                    FROM stop_times st
                         INNER JOIN trips t ON st.trip_id = t.trip_id
                         INNER JOIN calendar_dates c ON t.service_id = c.service_id
                         WHERE c.date = :date""", date=due_date_gtfs)
 
 
 def get_departure_times(db: Database, uic_ref: str, due_date: datetime) -> List[datetime]:
-    rows = db.query("""SELECT departure_time FROM calendar_trip_mapping
+    rows = db.query("""SELECT departure_time 
+                FROM calendar_trip_mapping
                 WHERE stop_id like :uic_ref
                 ORDER BY departure_time;""", uic_ref=f"{uic_ref}%").all()
     return list(map(lambda row: _combine_departure_time(row, due_date), rows))

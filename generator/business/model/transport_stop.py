@@ -1,13 +1,15 @@
 from typing import List
-from .transport_platform import TransportPlatform
+from shapely.geometry import Point
 
 
 class TransportStop:
 
-    def __init__(self, uic_name: str, uic_ref: str, platforms: List[TransportPlatform]):
+    def __init__(self, uic_name: str, uic_ref: int, location: Point, platforms: List[str]):
         self.uic_name = uic_name
         self.uic_ref = uic_ref
+        self.location = location
         self.platforms = platforms
 
     def __repr__(self):
-        return f"{{uic_name: {self.uic_name}, uic_ref: {self.uic_ref}, platforms: {self.platforms}}}"
+        return f"{{uic_name: {self.uic_name}, uic_ref: {self.uic_ref}," \
+               f" location: {self.location}, platforms: {self.platforms}}}"
