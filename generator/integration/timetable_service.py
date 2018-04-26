@@ -22,19 +22,14 @@ def get_count_of_distinct_next_stops(db_config: dict, uic_ref: str) -> int:
 
 
 def prepare_calendar_table(db: Database, due_date: datetime):
-    """Create a temporary table to use in get_departure_times for a specific date, only valid in the same
-    database connection context"""
-    print("Create temporary table")
+    """Setup table to use in get_departure_times for a specific date"""
     due_date_gtfs: str = _format_gtfs_date(due_date)
-    db.query("""CREATE TEMP TABLE calendar_trip_mapping AS
+    db.query("TRUNCATE calendar_trip_mapping;")
+    db.query("""INSERT INTO calendar_trip_mapping(departure_time, stop_id)
                     SELECT st.departure_time, st.stop_id FROM stop_times st
                         INNER JOIN trips t ON st.trip_id = t.trip_id
                         INNER JOIN calendar_dates c ON t.service_id = c.service_id
                         WHERE c.date = :date""", date=due_date_gtfs)
-    # db.query("CREATE INDEX ON calendar_trip_mapping(stop_id)")
-    # db.query("CREATE INDEX ON calendar_trip_mapping(departure_time)")
-    # db.query("VACUUM ANALYZE calendar_trip_mapping")
-    # TODO: VACUUM can't be executed here, therefore indices don't work properly
 
 
 def get_departure_times(db: Database, uic_ref: str, due_date: datetime) -> List[datetime]:
@@ -50,6 +45,6 @@ def _format_gtfs_date(due_date: datetime) -> str:
 
 
 def _combine_departure_time(row: dict, due_date: datetime) -> datetime:
-    """convert row of departure time with due date to form a complete datetime object """
+    """Convert row of departure time with due date to form a complete datetime object"""
     departure_time: timedelta = row['departure_time']
     return due_date + departure_time
