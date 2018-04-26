@@ -10,8 +10,8 @@ from .mock import mock_timetable_service
     ('8503125', PublicTransportGroup.B),
     ('8591382', PublicTransportGroup.C)
 ])
-def test_calculate_transport_stop_rating(uic_ref, expected):
-    transport_rating = generator.business.transport_stop_rating_calculator.calculate_transport_stop_rating(
+def test_calculate_transport_group(uic_ref, expected):
+    transport_rating = generator.business.transport_stop_rating_calculator.calculate_transport_group(
         _mock_registry(), uic_ref)
     assert transport_rating == expected
 
@@ -20,6 +20,9 @@ def _mock_registry():
     return {
         'timetable_service': mock_timetable_service,
         'config': {
-            'database-connections': {}
+            'database-connections': {},
+            'public-transport-types': {
+                'train-junction-min-directions': 6
+            }
         }
     }

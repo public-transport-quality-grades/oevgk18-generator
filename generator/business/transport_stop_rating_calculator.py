@@ -1,12 +1,16 @@
+from typing import List
 from .util.public_transport_group import PublicTransportGroup
+from . import transport_stop_interval_retriever as interval_retriever
 
 
-def calculate_transport_stop_rating(registry, uic_ref: str):
+def calculate_transport_stop_ratings(registry, due_date_config: dict, uic_refs: List[str]):
 
-    transport_group: PublicTransportGroup = calculate_transport_group(registry, uic_ref)
+    transport_groups = {uic_ref: calculate_transport_group(registry, uic_ref) for uic_ref in uic_refs}
 
-    # TODO calculate transport stop rating
-    return transport_group
+    intervals: float = interval_retriever.get_transport_stop_intervals(registry, due_date_config, uic_refs)
+
+    # TODO calculate transport stop category
+    return intervals
 
 
 def calculate_transport_group(registry, uic_ref: str) -> PublicTransportGroup:

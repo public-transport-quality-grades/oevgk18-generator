@@ -1,2 +1,3 @@
 CREATE EXTENSION pgrouting;
 CREATE EXTENSION hstore;
+CREATE EXTENSION pg_trgm;
