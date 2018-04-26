@@ -41,8 +41,6 @@ def _calculate_transport_stop_interval(
         print(f"No departures in interval {start_time} - {end_time}")
         return None
 
-    departures.sort()
-
     interval_delta: timedelta = end_time - start_time
 
     first_fictional_departure_after_interval: datetime = departures[0] + interval_delta
