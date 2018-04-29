@@ -6,7 +6,8 @@ from .model.transport_stop import TransportStop
 logger = logging.getLogger(__name__)
 
 
-def get_transport_stop_intervals(registry: dict, due_date_config: dict, stops: List[TransportStop]) -> Dict[str, float]:
+def get_transport_stop_intervals(
+        registry: dict, due_date_config: dict, stops: List[TransportStop]) -> Dict[int, Optional[float]]:
     """Calculate the departure interval in specified time bounds of public transport stops"""
     logger.info("Calculate Transport stop intervals")
 
