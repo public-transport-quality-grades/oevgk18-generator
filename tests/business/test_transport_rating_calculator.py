@@ -6,15 +6,22 @@ from generator.business.model.transport_stop import TransportStop
 from .mock import mock_timetable_service
 
 
-@pytest.mark.parametrize("transport_stop, expected", [
-    (TransportStop('', 8503400, None, []), PublicTransportGroup.A),
-    (TransportStop('', 8503125, None, []), PublicTransportGroup.B),
-    (TransportStop('', 8591382, None, []), PublicTransportGroup.C),
-])
-def test_calculate_transport_group(transport_stop, expected):
-    transport_rating = generator.business.transport_stop_rating_calculator.calculate_transport_group(
-        _mock_registry(), transport_stop)
-    assert transport_rating == expected
+def test_calculate_transport_group():
+    transport_stops = [
+       TransportStop('', 8503400, None, []),
+       TransportStop('', 8503125, None, []),
+       TransportStop('', 8591382, None, []),
+    ]
+
+    expected_transport_groups = {
+        transport_stops[0]: PublicTransportGroup.A,
+        transport_stops[1]: PublicTransportGroup.B,
+        transport_stops[2]: PublicTransportGroup.C,
+    }
+
+    transport_ratings = generator.business.transport_stop_rating_calculator.calculate_transport_groups(
+        _mock_registry(), transport_stops)
+    assert transport_ratings == expected_transport_groups
 
 
 def _mock_registry():

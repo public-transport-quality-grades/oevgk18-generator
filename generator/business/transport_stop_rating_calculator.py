@@ -24,11 +24,11 @@ def calculate_transport_groups(
     min_junction_directions = registry['config']['public-transport-types']['train-junction-min-directions']
 
     with timetable_service.db_connection(db_config) as db:
-        return {stop: calculate_transport_group(
+        return {stop: _calculate_transport_group(
             timetable_service, db, stop, min_junction_directions) for stop in transport_stops}
 
 
-def calculate_transport_group(
+def _calculate_transport_group(
         timetable_service, db, transport_stop: TransportStop, min_junction_directions: int) -> PublicTransportGroup:
 
     logger.debug(f"Calculate transport group for {transport_stop.uic_ref}")
