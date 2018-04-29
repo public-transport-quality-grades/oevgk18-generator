@@ -114,4 +114,4 @@ ENV/
 *.pbf
 
 # config
-generator_config.yaml
+generator_config.yml
