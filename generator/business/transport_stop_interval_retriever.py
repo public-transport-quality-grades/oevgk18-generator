@@ -16,19 +16,19 @@ def get_transport_stop_intervals(registry: dict, due_date_config: dict, stops: L
     start_time: datetime = _parse_time(due_date_config['lower-bound'], due_date)
     end_time: datetime = _parse_time(due_date_config['upper-bound'], due_date)
 
-    with timetable_service.db_connection(db_config) as db:
-        timetable_service.prepare_calendar_table(db, due_date)
-        return {stop.uic_ref: _get_transport_stop_interval(db, timetable_service, stop.uic_ref, due_date, start_time, end_time)
-                for stop in stops}
+    all_departure_times: Dict = timetable_service.get_all_departure_times(db_config, due_date)
+
+    return {stop.uic_ref: _get_transport_stop_interval(stop.uic_ref, all_departure_times, start_time, end_time)
+            for stop in stops}
 
 
-def _get_transport_stop_interval(db, timetable_service, uic_ref: str, due_date: datetime, start_time: datetime,
-                                 end_time: datetime) -> Optional[float]:
-    all_departures: List[datetime] = timetable_service.get_departure_times(db, uic_ref, due_date)
-    if not all_departures:
+def _get_transport_stop_interval(uic_ref: int, all_departures: Dict[int, List[datetime]],
+                                 start_time: datetime, end_time: datetime) -> Optional[float]:
+    stop_departures: List[datetime] = all_departures.get(uic_ref)
+    if not stop_departures:
         logger.debug(f"{uic_ref}: No departures found")
         return None
-    interval = _calculate_transport_stop_interval(all_departures, start_time, end_time)
+    interval = _calculate_transport_stop_interval(stop_departures, start_time, end_time)
     if not interval:
         logger.debug(f"{uic_ref}: No departures in interval {start_time} - {end_time}")
         return None
@@ -37,9 +37,10 @@ def _get_transport_stop_interval(db, timetable_service, uic_ref: str, due_date: 
 
 
 def _calculate_transport_stop_interval(
-        all_departures: List[datetime], start_time: datetime, end_time: datetime) -> Optional[float]:
+        stop_departures: List[datetime], start_time: datetime, end_time: datetime) -> Optional[float]:
+
     departures: List[datetime] = list(filter(
-        lambda t: _departure_time_inside_interval(t, start_time, end_time), all_departures))
+        lambda t: _departure_time_inside_interval(t, start_time, end_time), stop_departures))
 
     if not departures:
         return None
@@ -48,11 +49,13 @@ def _calculate_transport_stop_interval(
         # if there is just one departure, duplicate it to use it as start and end
         departures += departures
 
+    departures.sort()
+
     interval_delta: timedelta = end_time - start_time
 
     first_fictional_departure_after_interval: datetime = departures[0] + interval_delta
 
-    departures_after_interval = list(filter(lambda t: t > end_time, all_departures))
+    departures_after_interval = list(filter(lambda t: t > end_time, stop_departures))
     if departures_after_interval:
         first_scheduled_departure_after_interval: datetime = min(departures_after_interval)
         end_departure = min(first_scheduled_departure_after_interval, first_fictional_departure_after_interval)

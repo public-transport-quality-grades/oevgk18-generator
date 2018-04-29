@@ -23,13 +23,13 @@ def _query_transport_stop_rows(db: Database):
                         AS platform
                        FROM stops s
                        LEFT OUTER JOIN stops platforms on s.stop_id = platforms.parent_station
-                       WHERE s.stop_id LIKE '85%' AND s.stop_id NOT LIKE '%:%'
+                       WHERE s.stop_id LIKE '85%' AND s.parent_station IS NULL
                        GROUP BY s.stop_id;""")
 
 
 def _map_transport_stop(row: Record) -> TransportStop:
     uic_name = row['stop_name']
-    uic_ref = row['stop_id']
+    uic_ref = int(row['stop_id'])
     location = Point(row['stop_lon'], row['stop_lat'])
     platforms = row['platform']
     if platforms == [None]:
