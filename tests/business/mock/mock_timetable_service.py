@@ -3,7 +3,8 @@ from contextlib import contextmanager
 mocked_return_values = {
     8503400: 9,
     8503125: 5,
-    8591382: 0
+    8591382: 0,
+    8593245: 6
 }
 
 

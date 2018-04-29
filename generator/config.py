@@ -54,35 +54,35 @@ transport-stop-categories:
           - B: 1
           - C: 2
 
-    - min-interval: 301
+    - min-interval: 300
       max-interval: 600
       transport-type-mappings:
           - A: 1
           - B: 2
           - C: 3
 
-    - min-interval: 601
+    - min-interval: 600
       max-interval: 1200
       transport-type-mappings:
           - A: 2
           - B: 3
           - C: 4
     
-    - min-interval: 1201
+    - min-interval: 1200
       max-interval: 2400
       transport-type-mappings:
           - A: 3
           - B: 4
           - C: 5
     
-    - min-interval: 2401
+    - min-interval: 2400
       max-interval: 3600
       transport-type-mappings:
           - A: 4
           - B: 5
           - C: 6
     
-    - min-interval: 3601
+    - min-interval: 3600
       transport-type-mappings:
           - B: 7
           - C: 7
