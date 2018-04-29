@@ -18,13 +18,13 @@ def calculate_transport_stop_ratings(registry, due_date_config: dict, transport_
 
 
 def calculate_transport_groups(
-        registry, transport_stops: List[TransportStop]) -> Dict[PublicTransportGroup, TransportStop]:
+        registry, transport_stops: List[TransportStop]) -> Dict[int, TransportStop]:
     timetable_service = registry['timetable_service']
     db_config = registry['config']['database-connections']
     min_junction_directions = registry['config']['public-transport-types']['train-junction-min-directions']
 
     with timetable_service.db_connection(db_config) as db:
-        return {stop: _calculate_transport_group(
+        return {stop.uic_ref: _calculate_transport_group(
             timetable_service, db, stop, min_junction_directions) for stop in transport_stops}
 
 
