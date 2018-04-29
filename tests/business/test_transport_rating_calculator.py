@@ -14,9 +14,9 @@ def test_calculate_transport_group():
     ]
 
     expected_transport_groups = {
-        transport_stops[0]: PublicTransportGroup.A,
-        transport_stops[1]: PublicTransportGroup.B,
-        transport_stops[2]: PublicTransportGroup.C,
+        8503400: PublicTransportGroup.A,
+        8503125: PublicTransportGroup.B,
+        8591382: PublicTransportGroup.C,
     }
 
     transport_ratings = generator.business.transport_stop_rating_calculator.calculate_transport_groups(
