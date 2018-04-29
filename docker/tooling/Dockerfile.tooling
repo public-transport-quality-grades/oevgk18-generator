@@ -16,13 +16,6 @@ RUN mkdir -p /opt/osm2po \
 COPY ./osm-data/osm2po-config /opt/osm2po
 
 
-RUN mkdir -p /opt/osmosis \
-    && wget "http://bretth.dev.openstreetmap.org/osmosis-build/osmosis-0.45.tgz" \
-    && tar zxvf osmosis-0.45.tgz -C /opt/osmosis/ \
-    && rm osmosis-0.45.tgz \
-    && ln -s /opt/osmosis/bin/osmosis /usr/local/bin/osmosis
-
-
 COPY ./scripts /scripts
 
 ENV PATH="/scripts:${PATH}"

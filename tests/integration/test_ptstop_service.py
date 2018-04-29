@@ -1,23 +1,24 @@
+from contextlib import contextmanager
 from ..context import generator
 
 fake_db_rows = [{
-        'id': 1,
-        'tags': {
-            'uic_ref': '42',
-            'uic_name': "fake uic name",
-        },
-        'geom': "fake geom"
+        'stop_id': 1,
+        'stop_name': "fakeName",
+        'stop_lat': 47.3458,
+        'stop_lon': 8.34982,
+        'platform': [None, '1', '2']
     },
     {
-        'id': 2,
-        'tags': {
-            'uic_ref': '42',
-        },
-        'geom': "fake geom"
-    }]
+        'stop_id': 1,
+        'stop_name': "fakeName",
+        'stop_lat': 47.3458,
+        'stop_lon': 8.34982,
+        'platform': [None]
+    }
+]
 
 
-def _fake_query_transport_stop_node(db, uic_ref: str):
+def _fake_query_transport_stop_rows(db):
     return fake_db_rows
 
 
@@ -25,16 +26,22 @@ def _fake_parse_point_geometry(geom):
     return geom
 
 
+@contextmanager
+def _fake_db_connection(db_config):
+    yield None
+
+
 def test_get_transport_stop_from_uic_ref(monkeypatch):
     monkeypatch.setattr(
-        generator.integration.ptstop_service, '_query_transport_stop_node', _fake_query_transport_stop_node)
+        generator.integration.ptstop_service, '_query_transport_stop_rows', _fake_query_transport_stop_rows)
     monkeypatch.setattr(
-        generator.integration.geometry_parser, 'parse_point_geometry', _fake_parse_point_geometry)
-    transport_stop = generator.integration.ptstop_service.get_transport_stop_from_uic_ref(None, '42')
+        generator.integration.ptstop_service, 'db_connection', _fake_db_connection)
 
-    assert transport_stop.uic_name == fake_db_rows[0]['tags']['uic_name']
-    assert transport_stop.uic_ref == fake_db_rows[1]['tags']['uic_ref']
-    assert len(transport_stop.platforms) == 2
-    assert all([p.node_geom == fake_db_rows[0]['geom'] for p in transport_stop.platforms])
-    assert transport_stop.platforms[0].osm_id == fake_db_rows[0]['id']
-    assert transport_stop.platforms[1].osm_id == fake_db_rows[1]['id']
+    transport_stops = generator.integration.ptstop_service.get_transport_stops({})
+
+    assert transport_stops[0].uic_name == fake_db_rows[0]['stop_name']
+    assert transport_stops[0].uic_ref == fake_db_rows[1]['stop_id']
+    assert transport_stops[0].location.x == fake_db_rows[0]['stop_lon']
+    assert transport_stops[0].location.y == fake_db_rows[0]['stop_lat']
+    assert transport_stops[0].platforms == fake_db_rows[0]['platform']
+    assert transport_stops[1].platforms == []

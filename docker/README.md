@@ -6,6 +6,13 @@
 docker-compose up -d
 ```
 
+## updating gtfs data
+
+``` bash
+docker-compose run tooling generate-gtfs-data.sh
+docker-compose run db import-gtfs-data.sh
+```
+
 ## updating osm data
 
 Make sure that the osm-file is placed under `docker/tooling/osm-data`
@@ -13,13 +20,6 @@ Make sure that the osm-file is placed under `docker/tooling/osm-data`
 ``` bash
 docker-compose run tooling generate-osm-data.sh /osm-data/<osm-file>
 docker-compose run db import-osm-data.sh
-```
-
-## updating gtfs data
-
-``` bash
-docker-compose run tooling generate-gtfs-data.sh
-docker-compose run db import-gtfs-data.sh
 ```
 
 ## updating terrain data
