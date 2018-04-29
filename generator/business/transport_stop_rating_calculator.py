@@ -1,12 +1,15 @@
-from typing import List
+from typing import List, Dict
+import logging
 from .util.public_transport_group import PublicTransportGroup
 from . import transport_stop_interval_retriever as interval_retriever
 from .model.transport_stop import TransportStop
 
+logger = logging.getLogger(__name__)
+
 
 def calculate_transport_stop_ratings(registry, due_date_config: dict, transport_stops: List[TransportStop]):
 
-    transport_groups = {stop: calculate_transport_group(registry, stop) for stop in transport_stops}
+    transport_groups = calculate_transport_groups(registry, transport_stops)
 
     intervals: float = interval_retriever.get_transport_stop_intervals(registry, due_date_config, transport_stops)
 
@@ -14,13 +17,22 @@ def calculate_transport_stop_ratings(registry, due_date_config: dict, transport_
     return intervals
 
 
-def calculate_transport_group(registry, transport_stop: TransportStop) -> PublicTransportGroup:
-
+def calculate_transport_groups(
+        registry, transport_stops: List[TransportStop]) -> Dict[PublicTransportGroup, TransportStop]:
     timetable_service = registry['timetable_service']
     db_config = registry['config']['database-connections']
     min_junction_directions = registry['config']['public-transport-types']['train-junction-min-directions']
 
-    railway_direction_count = timetable_service.get_count_of_distinct_next_stops(db_config, transport_stop.uic_ref)
+    with timetable_service.db_connection(db_config) as db:
+        return {stop: calculate_transport_group(
+            timetable_service, db, stop, min_junction_directions) for stop in transport_stops}
+
+
+def calculate_transport_group(
+        timetable_service, db, transport_stop: TransportStop, min_junction_directions: int) -> PublicTransportGroup:
+
+    logger.debug(f"Calculate transport group for {transport_stop.uic_ref}")
+    railway_direction_count = timetable_service.get_count_of_distinct_next_stops(db, transport_stop.uic_ref)
     if _is_railway_junction(railway_direction_count, min_junction_directions):
         return PublicTransportGroup.A
     if _is_railway(railway_direction_count):
