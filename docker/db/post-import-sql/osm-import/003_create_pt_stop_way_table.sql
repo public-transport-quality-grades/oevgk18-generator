@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS pt_stop_way;
 
 CREATE TABLE pt_stop_way (
     id SERIAL NOT NULL PRIMARY KEY,
-    pt_stop_id BIGINT NOT NULL,
+    pt_stop_id BIGINT NOT NULL REFERENCES stops(uic_ref),
     entry_way_id INTEGER NOT NULL REFERENCES routing(id)
 );
 
