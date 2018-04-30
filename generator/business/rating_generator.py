@@ -1,4 +1,7 @@
+import logging
 from . import transport_stop_resolver, transport_stop_rating_calculator
+
+logger = logging.getLogger(__name__)
 
 
 def start(registry: dict, params):
