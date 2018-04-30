@@ -7,7 +7,7 @@ from generator.ui import cli
 from generator.integration import ptstop_service, routing_engine_service, timetable_service
 from generator import config
 
-CONFIGURATION_PATH = "generator_config.yaml"
+CONFIGURATION_PATH = "generator_config.yml"
 
 logger = logging.getLogger('generator')
 

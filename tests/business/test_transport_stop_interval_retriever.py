@@ -1,12 +1,15 @@
 from datetime import datetime
 from ..context import generator
 from .mock import mock_timetable_service
+from generator.business.model.transport_stop import TransportStop
 
 
 def test_calculate_transport_stop_interval_trivial():
     """example from the VISUM 12 book"""
 
-    uic_refs = ['8503400']
+    stops = [
+        TransportStop('', 8503400, None, [])
+    ]
 
     due_date_config = {
         'due-date': datetime(2018, 4, 23),
@@ -15,11 +18,11 @@ def test_calculate_transport_stop_interval_trivial():
     }
 
     expected_interval = {
-        '8503400': 2600
+        8503400: 2600
     }
 
     result = generator.business.transport_stop_interval_retriever.get_transport_stop_intervals(
-        _mock_registry(), due_date_config, uic_refs)
+        _mock_registry(), due_date_config, stops)
 
     assert result == expected_interval
 
@@ -27,7 +30,9 @@ def test_calculate_transport_stop_interval_trivial():
 def test_calculate_transport_stop_interval_regular():
     # with more data, the algorithm gets closer to the "real" interval
 
-    uic_refs = ['8503125']
+    stops = [
+        TransportStop('', 8503125, None, [])
+    ]
 
     due_date_config = {
         'due-date': datetime(2018, 4, 23),
@@ -36,18 +41,20 @@ def test_calculate_transport_stop_interval_regular():
     }
 
     expected_interval = {
-        '8503125': 890.625  # 14 min 50s
+        8503125: 890.625  # 14 min 50s
     }
 
     result = generator.business.transport_stop_interval_retriever.get_transport_stop_intervals(
-        _mock_registry(), due_date_config, uic_refs)
+        _mock_registry(), due_date_config, stops)
 
     assert result == expected_interval
 
 
 def test_calculate_transport_stop_interval_skewed():
 
-    uic_refs = ['8591382']
+    stops = [
+        TransportStop('', 8591382, None, [])
+    ]
 
     due_date_config = {
         'due-date': datetime(2018, 4, 23),
@@ -56,11 +63,11 @@ def test_calculate_transport_stop_interval_skewed():
     }
 
     expected_interval = {
-        '8591382': 3481.5  # 58.01 min
+        8591382: 3481.5  # 58.01 min
     }
 
     result = generator.business.transport_stop_interval_retriever.get_transport_stop_intervals(
-        _mock_registry(), due_date_config, uic_refs)
+        _mock_registry(), due_date_config, stops)
 
     assert result == expected_interval
 

@@ -1,9 +1,8 @@
 from typing import Iterable, List
 from contextlib import contextmanager
 from records import Database, Record
-from . import geometry_parser
+from shapely.geometry import Point
 from ..business.model.transport_stop import TransportStop
-from ..business.model.transport_platform import TransportPlatform
 
 
 @contextmanager
@@ -13,32 +12,27 @@ def db_connection(db_config: dict):
     connection.close()
 
 
-def get_transport_stops(db: Database) -> List[str]:
-    pt_stop_rows = _query_transport_stop_nodes(db)
-    return [pt_stop_row.uic_ref for pt_stop_row in pt_stop_rows]
+def get_transport_stops(db_config: dict) -> List[TransportStop]:
+    with db_connection(db_config) as db:
+        pt_stop_rows = _query_transport_stop_rows(db)
+        return list(map(_map_transport_stop, pt_stop_rows))
 
 
-def _query_transport_stop_nodes(db: Database):
-    return db.query("SELECT distinct tags -> 'uic_ref' as uic_ref FROM pt_stop;")
+def _query_transport_stop_rows(db: Database):
+    return db.query("""SELECT s.stop_id, s.stop_name, s.stop_lat, s.stop_lon, array_agg(platforms.platform_code)
+                        AS platform
+                       FROM stops s
+                       LEFT OUTER JOIN stops platforms on s.stop_id = platforms.parent_station
+                       WHERE s.stop_id LIKE '85%' AND s.parent_station IS NULL
+                       GROUP BY s.stop_id;""")
 
 
-def get_transport_stop_from_uic_ref(db: Database, uic_ref: str) -> TransportStop:
-    pt_stop_rows = _query_transport_stop_node(db, uic_ref)
-    return _map_transport_stop(uic_ref, pt_stop_rows)
+def _map_transport_stop(row: Record) -> TransportStop:
+    uic_name = row['stop_name']
+    uic_ref = int(row['stop_id'])
+    location = Point(row['stop_lon'], row['stop_lat'])
+    platforms = row['platform']
+    if platforms == [None]:
+        platforms = []
 
-
-def _query_transport_stop_node(db: Database, uic_ref: str):
-    return db.query("SELECT id, tags, geom FROM pt_stop WHERE tags -> 'uic_ref' = :uic_ref", uic_ref=uic_ref)
-
-
-def _map_transport_stop(uic_ref: str, rows: Iterable[Record]) -> TransportStop:
-    platforms = list()
-    uic_name = "undefined"
-    for row in rows:
-        if 'uic_name' in row['tags']:
-            uic_name = row['tags']['uic_name']
-        osm_id = row['id']
-        node_geom = geometry_parser.parse_point_geometry(row['geom'])
-        platforms.append(TransportPlatform(osm_id, node_geom))
-
-    return TransportStop(uic_name, uic_ref, platforms)
+    return TransportStop(uic_name, uic_ref, location, platforms)
