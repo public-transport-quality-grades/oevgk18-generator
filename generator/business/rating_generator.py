@@ -1,5 +1,5 @@
 import logging
-from . import transport_stop_rating_calculator
+from . import transport_stop_rating_calculator, walking_time_retriever
 
 logger = logging.getLogger(__name__)
 
@@ -11,3 +11,5 @@ def start(registry: dict, params):
         # TODO execute for all configurations
         transport_rating = \
             transport_stop_rating_calculator.calculate_transport_stop_ratings(registry, due_date_config)
+
+    walking_time_retriever.get_isochrones(registry)
