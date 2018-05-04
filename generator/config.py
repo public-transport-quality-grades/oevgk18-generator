@@ -6,6 +6,10 @@ import jsonschema
 DEFAULT_CONFIG = """
 database-connections:
     public-transport-stops: "postgres://test:test@localhost:5432/oevgk18"
+    
+isochrones:
+    - max-relevant-distance: 1.280 # 900s * 1.4m/s = 1.280km
+      walking-speed: 1.4 # m/s
 
 due-dates:
     - type-of-day: "Working Day"
@@ -157,6 +161,26 @@ SCHEMA = {
             },
             "additionalProperties": False,
             "required": ["public-transport-stops"]
+        },
+        "isochrones": {
+            "$id": "/properties/isochrones",
+            "type": "array",
+            "items": {
+                "$id": "/properties/isochrones/items",
+                "type": "object",
+                "properties": {
+                    "max-relevant-distance": {
+                        "$id": "/properties/isochrones/items/properties/max-relevant-distance",
+                        "type": "number"
+                    },
+                    "walking-speed": {
+                        "$id": "/properties/isochrones/items/properties/walking-speed",
+                        "type": "number"
+                    }
+                }
+            },
+            "additionalProperties": False,
+            "required": ["max-relevant-distance", "walking-speed"]
         },
         "due-dates": {
             "$id": "/properties/due-dates",
