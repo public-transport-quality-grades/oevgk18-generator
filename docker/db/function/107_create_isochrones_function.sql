@@ -20,6 +20,6 @@ BEGIN
       FROM relevant_bounderies,
       LATERAL pgr_pointsAsPolygon(
           'SELECT id::integer, ST_X(point)::float AS x, ST_Y(point)::float AS y FROM distances WHERE distance <= ' || boundary || ';'
-      ) AS polygon_geom;
+      ) AS polygon_geom WHERE polygon_geom IS NOT NULL;
   END;
 $$ LANGUAGE plpgsql

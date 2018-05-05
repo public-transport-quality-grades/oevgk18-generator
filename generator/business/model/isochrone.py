@@ -3,8 +3,8 @@ from shapely.geometry import Polygon
 
 class Isochrone:
 
-    def __init__(self, distance: int, polygon: Polygon):
-        self.distance: int = distance
+    def __init__(self, distance: float, polygon: Polygon):
+        self.distance: float = distance
         self.polygon: Polygon = polygon
 
     def __repr__(self):

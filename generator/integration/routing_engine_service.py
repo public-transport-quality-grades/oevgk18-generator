@@ -2,7 +2,7 @@ import logging
 from contextlib import contextmanager
 from records import Database, Record
 from typing import List, Dict, Tuple
-from .util import geometry_parser
+from .util import geometry_parser, geojson_writer
 from ..business.model.isochrone import Isochrone
 
 logger = logging.getLogger(__name__)
@@ -53,4 +53,4 @@ def _retrieve_uic_ref_vertex_mapping(db: Database) -> List[Tuple[int, int]]:
 
 
 def _map_isochrones(rows: List[Record]) -> List[Isochrone]:
-    return [Isochrone(row['distance'], geometry_parser.parse_polygon_geometry(row['polygon'])) for row in rows]
+    return [Isochrone(float(row['distance']), geometry_parser.parse_polygon_geometry(row['polygon'])) for row in rows]
