@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_transport_stop_intervals(
-        registry: dict, due_date_config: dict, stops: List[TransportStop]) -> Dict[int, Optional[float]]:
+        registry: dict, due_date_config: dict, stops: List[int]) -> Dict[int, Optional[float]]:
     """Calculate the departure interval in specified time bounds of public transport stops"""
     logger.info("Calculate Transport stop intervals")
 
@@ -19,8 +19,8 @@ def get_transport_stop_intervals(
 
     all_departure_times: Dict = timetable_service.get_all_departure_times(db_config, due_date)
 
-    return {stop.uic_ref: _get_transport_stop_interval(stop.uic_ref, all_departure_times, start_time, end_time)
-            for stop in stops}
+    return {stop_uic_ref: _get_transport_stop_interval(stop_uic_ref, all_departure_times, start_time, end_time)
+            for stop_uic_ref in stops}
 
 
 def _get_transport_stop_interval(uic_ref: int, all_departures: Dict[int, List[datetime]],
