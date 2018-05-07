@@ -4,7 +4,7 @@ import logging
 
 from generator.business import rating_generator
 from generator.ui import cli
-from generator.integration import ptstop_service, routing_engine_service, timetable_service
+from generator.integration import routing_engine_service, timetable_service
 from generator import config
 
 CONFIGURATION_PATH = "generator_config.yml"
@@ -15,7 +15,6 @@ logger = logging.getLogger('generator')
 def wire() -> dict:
     registry = dict()
     registry['ui'] = cli
-    registry['ptstop_service'] = ptstop_service
     registry['routing_engine_service'] = routing_engine_service
     registry['timetable_service'] = timetable_service
     registry['config'] = config.load_config(CONFIGURATION_PATH)
