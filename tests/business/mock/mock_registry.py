@@ -1,7 +1,8 @@
 
-def get_registry(timetable_service):
+def get_registry(timetable_service=None, transport_stop_service=None):
     return {
         'timetable_service': timetable_service,
+        'transport_stop_service': transport_stop_service,
         'config': {
             'database-connections': {},
             'public-transport-types': {

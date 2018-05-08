@@ -1,1 +1,1 @@
-from . import public_transport_group
+from . import public_transport_group, public_transport_stop_category

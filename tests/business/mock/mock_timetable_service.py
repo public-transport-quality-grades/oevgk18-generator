@@ -36,7 +36,7 @@ def db_connection(db_config: dict):
     yield None
 
 
-def get_count_of_distinct_next_stops(db_config: dict) -> int:
+def get_count_of_distinct_next_stops(db_config, relevant_stops) -> Dict[int, int]:
     return mocked_return_values
 
 

@@ -1,5 +1,7 @@
-from typing import Dict
+from typing import Dict, List
 import logging
+from .model.transport_stop import TransportStop
+from .model.route_type import RouteType
 from .util.public_transport_group import PublicTransportGroup
 
 logger = logging.getLogger(__name__)
@@ -9,21 +11,38 @@ TransportGroups = Dict[int, PublicTransportGroup]
 
 def calculate_transport_groups(registry) -> TransportGroups:
     timetable_service = registry['timetable_service']
+    transport_stop_service = registry['transport_stop_service']
     db_config = registry['config']['database-connections']
     min_junction_directions = registry['config']['public-transport-types']['train-junction-min-directions']
 
     logger.info(f"Calculate transport groups")
     with timetable_service.db_connection(db_config) as db:
-        direction_count_stop_mapping = timetable_service.get_count_of_distinct_next_stops(db)
-        return {uic_ref: _calculate_transport_group(direction_count, min_junction_directions)
-                for (uic_ref, direction_count) in direction_count_stop_mapping.items()}
+        transport_stops: List[TransportStop] = transport_stop_service.get_transport_stops(db)
+
+        railway_lines = list(filter(lambda stop: stop.is_railway_line(), transport_stops))
+        other_lines = list(set(transport_stops) - set(railway_lines))
+
+        direction_count_stop_mapping = \
+            timetable_service.get_count_of_distinct_next_stops(db, [stop.uic_ref for stop in railway_lines])
+        railway_groups = {railway_line.uic_ref:
+                          _calculate_transport_group(railway_line,
+                                                     direction_count_stop_mapping[railway_line.uic_ref],
+                                                     min_junction_directions)
+                          for railway_line in railway_lines}
+
+        other_groups = {line.uic_ref: _calculate_transport_group(line) for line in other_lines}
+
+        other_groups.update(railway_groups)
+        return other_groups
 
 
-def _calculate_transport_group(direction_count: int, min_junction_directions: int) -> PublicTransportGroup:
-    if _is_railway_junction(direction_count, min_junction_directions):
-        return PublicTransportGroup.A
-    if _is_railway(direction_count):
-        return PublicTransportGroup.B
+def _calculate_transport_group(transport_stop: TransportStop,
+                               direction_count: int = 0, min_junction_directions: int = 0) -> PublicTransportGroup:
+    if transport_stop.is_railway_line():
+        if _is_railway_junction(direction_count, min_junction_directions):
+            return PublicTransportGroup.A
+        if _is_railway(direction_count):
+            return PublicTransportGroup.B
     return PublicTransportGroup.C
 
 
