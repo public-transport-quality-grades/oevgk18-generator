@@ -1,5 +1,4 @@
 from typing import List
-from .model.transport_stop import TransportStop
 
 
 def transport_stops(registry) -> List[str]:

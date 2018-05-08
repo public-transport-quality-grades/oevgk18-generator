@@ -14,13 +14,22 @@ def db_connection(db_config: dict):
     connection.close()
 
 
-def get_count_of_distinct_next_stops(db: Database, uic_ref: int) -> int:
-    rows = db.query("""SELECT nsm2.stop_name FROM next_station_mapping nsm1
-                          INNER JOIN next_station_mapping nsm2 ON nsm1.trip_id = nsm2.trip_id
-                          WHERE nsm1.parent_station = :uic_ref AND
-                              nsm1.stop_sequence = (nsm2.stop_sequence - 1)
-                              GROUP BY nsm2.stop_name;""", uic_ref=str(uic_ref)).all()
-    return len(rows)
+def get_count_of_distinct_next_stops(db: Database) -> Dict[int, int]:
+    rows =  db.query("""WITH relevant_stops AS (
+                           SELECT s.stop_id
+                               FROM stops s
+                                  LEFT OUTER JOIN stops platforms on s.stop_id = platforms.parent_station
+                               WHERE s.stop_id LIKE '85%' AND s.parent_station IS NULL
+                                  GROUP BY s.stop_id
+                       )
+                       SELECT distinct nsm1.parent_station AS uic_ref, 
+                          COUNT(nsm2.stop_name) OVER (PARTITION BY nsm1.parent_station)
+                          FROM relevant_stops 
+                              LEFT JOIN next_station_mapping nsm1 ON relevant_stops.stop_id = nsm1.parent_station
+                              INNER JOIN next_station_mapping nsm2 ON nsm1.trip_id = nsm2.trip_id
+                          WHERE nsm1.stop_sequence = (nsm2.stop_sequence - 1)
+                              GROUP BY nsm1.parent_station, nsm2.stop_name;""").all()
+    return {int(row['uic_ref']): row['count'] for row in rows}
 
 
 def get_all_departure_times(db_config: dict, due_date: datetime) -> Dict[int, List[datetime]]:

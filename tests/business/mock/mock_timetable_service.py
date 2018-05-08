@@ -36,8 +36,8 @@ def db_connection(db_config: dict):
     yield None
 
 
-def get_count_of_distinct_next_stops(db_config: dict, uic_ref: str) -> int:
-    return mocked_return_values[uic_ref]
+def get_count_of_distinct_next_stops(db_config: dict) -> int:
+    return mocked_return_values
 
 
 def get_all_departure_times(db_config: dict, due_date: datetime) -> Dict[int, List[datetime]]:
