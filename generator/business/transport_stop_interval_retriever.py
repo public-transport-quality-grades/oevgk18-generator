@@ -1,7 +1,6 @@
 from typing import List, Dict, Optional
 from datetime import time, datetime, timedelta
 import logging
-from .model.transport_stop import TransportStop
 
 logger = logging.getLogger(__name__)
 
