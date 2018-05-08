@@ -2,7 +2,7 @@ import logging
 from contextlib import contextmanager
 from records import Database, Record
 from typing import List, Optional
-from .util import geometry_parser, geojson_writer
+from .util import geometry_parser
 from ..business.model.isochrone import Isochrone
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ def calc_effective_kilometres(db: Database, max_relevant_distance: float):
 
 
 def _mark_relevant_roads(db: Database, max_relevant_distance: float):
-    logger.info(f"Mark nodes that are reachable in {max_relevant_distance} metres")
+    logger.info(f"Mark nodes that are reachable in {max_relevant_distance} kilometres")
     transaction = db.transaction()
     db.query("""SELECT mark_relevant_ways(:max_relevant_distance);""", max_relevant_distance=max_relevant_distance)
     transaction.commit()

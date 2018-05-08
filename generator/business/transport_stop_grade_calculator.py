@@ -32,7 +32,7 @@ def _calculate_grades_for_stop(
     config = registry['config']
     distance_grades: DistanceGradeMapping = walking_time_retriever.get_distance_grade_mapping(config, stop_rating)
     isochrones: List[Isochrone] = walking_time_retriever.get_isochrones(
-        registry, db, uic_ref, list(distance_grades.keys()))
+        registry, db, uic_ref, [*distance_grades])
     gradings: List[Grading] = [grading for grading in [_map_isochrone_to_grading(isochrone, distance_grades)
                                for isochrone in isochrones] if grading is not None]
     logger.debug(f"Gradings for {uic_ref}: {gradings}")

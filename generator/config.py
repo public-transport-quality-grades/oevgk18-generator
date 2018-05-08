@@ -11,6 +11,17 @@ isochrones:
     - max-relevant-distance: 1.280 # 900s * 1.4m/s = 1.280km
       walking-speed: 1.4 # m/s
 
+output:
+    output-directory: "results/"
+    styling:
+        opacity: 0.6
+        colors:
+            A: "#700038" # color of transport stop rating A
+            B: "#BC42FF"
+            C: "#9966FF"
+            D: "#00B000"
+            E: "#B3FF40"
+            F: "#DEF325"
 due-dates:
     - type-of-day: "Working Day"
       type-of-interval: "Day"
@@ -143,6 +154,10 @@ SCHEMA = {
         "pt-rating-category": {
             "type": "string",
             "pattern": "^[A-F]$"
+        },
+        "color": {
+            "type": "string",
+            "pattern": "^#[A-Fa-f0-9]{6}$"
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -177,6 +192,35 @@ SCHEMA = {
             },
             "additionalProperties": False,
             "required": ["max-relevant-distance", "walking-speed"]
+        },
+        "output":  {
+            "$id": "/properties/isochrones",
+            "type": "object",
+            "properties": {
+                "output-directory": {
+                    "type": "string"
+                },
+                "styling": {
+                    "type": "object",
+                    "properties": {
+                        "opacity": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1.0
+                        },
+                        "colors": {
+                            "properties": {},
+                            "additionalProperties": {
+                                "$ref": "#/definitions/color"
+                            }
+                        }
+                    },
+                    "additionalProperties": False,
+                    "requiredProperties": ["opacity", "colors"]
+                }
+            },
+            "additionalProperties": False,
+            "requiredProperties": ["output-directory", "styling"]
         },
         "due-dates": {
             "$id": "/properties/due-dates",
