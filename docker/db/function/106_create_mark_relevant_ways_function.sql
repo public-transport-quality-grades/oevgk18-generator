@@ -1,11 +1,12 @@
-CREATE OR REPLACE FUNCTION mark_relevant_ways() RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION mark_relevant_ways(distance DOUBLE PRECISION) RETURNS VOID AS $$
 BEGIN
   UPDATE routing SET relevant = TRUE FROM (
     SELECT edge
-      FROM pt_stop_way,
+      FROM stop_vertex_mapping,
         pgr_drivingdistance('select id, source, target, km as cost from routing',
-        pt_stop_way.entry_way_id,
-        0.300)) as reachable_edge
-  WHERE routing.id = reachable_edge.edge;
+        stop_vertex_mapping.nearest_vertex_id,
+        distance,
+        FALSE)) AS reachable_edge
+  WHERE reachable_edge.edge != -1 AND routing.id = reachable_edge.edge;
 END;
 $$ LANGUAGE plpgsql;

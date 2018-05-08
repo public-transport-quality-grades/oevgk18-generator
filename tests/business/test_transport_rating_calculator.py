@@ -28,8 +28,9 @@ def test_calculate_transport_stop_ratings(monkeypatch):
         8593245: None
     }
 
+    transport_groups = mock_transport_group_retriever.calculate_transport_groups(registry)
+
     stop_categories = generator.business.transport_stop_rating_calculator.calculate_transport_stop_ratings(
-                                                                                        registry,
-                                                                                        due_date_config)
+        registry, due_date_config, transport_groups)
     assert len(stop_categories) == len(expected_stop_categories)
     assert stop_categories == expected_stop_categories

@@ -6,7 +6,22 @@ import jsonschema
 DEFAULT_CONFIG = """
 database-connections:
     public-transport-stops: "postgres://test:test@localhost:5432/oevgk18"
+    
+isochrones:
+    - max-relevant-distance: 1.280 # 900s * 1.4m/s = 1.280km
+      walking-speed: 1.4 # m/s
 
+output:
+    output-directory: "results/"
+    styling:
+        opacity: 0.6
+        colors:
+            A: "#700038" # color of transport stop rating A
+            B: "#BC42FF"
+            C: "#9966FF"
+            D: "#00B000"
+            E: "#B3FF40"
+            F: "#DEF325"
 due-dates:
     - type-of-day: "Working Day"
       type-of-interval: "Day"
@@ -88,8 +103,7 @@ transport-stop-categories:
           - C: 7
 
 public-transport-ratings:
-    - min-seconds: 0
-      max-seconds: 300
+    - max-seconds: 300
       transport-stop-categories:
           - 1: 'A' # i.e. transport stop category I gets a transport stop rating 'A'
           - 2: 'A'
@@ -99,8 +113,7 @@ public-transport-ratings:
           - 6: 'E'
           - 7: 'F'
     
-    - min-seconds: 301
-      max-seconds: 450
+    - max-seconds: 450
       transport-stop-categories:
           - 1: 'A'
           - 2: 'B'
@@ -108,16 +121,14 @@ public-transport-ratings:
           - 4: 'D'
           - 5: 'E'
     
-    - min-seconds: 451
-      max-seconds: 600
+    - max-seconds: 600
       transport-stop-categories:
           - 1: 'B'
           - 2: 'C'
           - 3: 'D'
           - 4: 'E'
     
-    - min-seconds: 601
-      max-seconds: 900
+    - max-seconds: 900
       transport-stop-categories:
           - 1: 'C'
           - 2: 'D'
@@ -143,6 +154,10 @@ SCHEMA = {
         "pt-rating-category": {
             "type": "string",
             "pattern": "^[A-F]$"
+        },
+        "color": {
+            "type": "string",
+            "pattern": "^#[A-Fa-f0-9]{6}$"
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -157,6 +172,55 @@ SCHEMA = {
             },
             "additionalProperties": False,
             "required": ["public-transport-stops"]
+        },
+        "isochrones": {
+            "$id": "/properties/isochrones",
+            "type": "array",
+            "items": {
+                "$id": "/properties/isochrones/items",
+                "type": "object",
+                "properties": {
+                    "max-relevant-distance": {
+                        "$id": "/properties/isochrones/items/properties/max-relevant-distance",
+                        "type": "number"
+                    },
+                    "walking-speed": {
+                        "$id": "/properties/isochrones/items/properties/walking-speed",
+                        "type": "number"
+                    }
+                }
+            },
+            "additionalProperties": False,
+            "required": ["max-relevant-distance", "walking-speed"]
+        },
+        "output":  {
+            "$id": "/properties/isochrones",
+            "type": "object",
+            "properties": {
+                "output-directory": {
+                    "type": "string"
+                },
+                "styling": {
+                    "type": "object",
+                    "properties": {
+                        "opacity": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1.0
+                        },
+                        "colors": {
+                            "properties": {},
+                            "additionalProperties": {
+                                "$ref": "#/definitions/color"
+                            }
+                        }
+                    },
+                    "additionalProperties": False,
+                    "requiredProperties": ["opacity", "colors"]
+                }
+            },
+            "additionalProperties": False,
+            "requiredProperties": ["output-directory", "styling"]
         },
         "due-dates": {
             "$id": "/properties/due-dates",
@@ -252,10 +316,6 @@ SCHEMA = {
                 "$id": "/properties/public-transport-ratings/items",
                 "type": "object",
                 "properties": {
-                    "min-seconds": {
-                        "$id": "/properties/public-transport-ratings/items/properties/min-seconds",
-                        "type": "integer"
-                    },
                     "max-seconds": {
                         "$id": "/properties/public-transport-ratings/items/properties/max-seconds",
                         "type": "integer"
@@ -294,7 +354,7 @@ SCHEMA = {
                     }
                 },
                 "additionalProperties": False,
-                "required": ["min-seconds", "max-seconds", "transport-stop-categories"]
+                "required": ["max-seconds", "transport-stop-categories"]
 
             }
         }

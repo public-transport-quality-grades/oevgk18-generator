@@ -2,7 +2,6 @@ from typing import List, Dict, Optional
 import logging
 from .util.public_transport_group import PublicTransportGroup
 from .util.public_transport_stop_category import PublicTransportStopCategory
-from . import transport_group_retriever
 from . import transport_stop_interval_retriever as interval_retriever
 
 logger = logging.getLogger(__name__)
@@ -12,9 +11,9 @@ Intervals = Dict[int, Optional[float]]
 TransportStopCategories = Dict[int, PublicTransportStopCategory]
 
 
-def calculate_transport_stop_ratings(registry, due_date_config: dict) -> TransportStopCategories:
+def calculate_transport_stop_ratings(
+        registry, due_date_config: dict, transport_groups: TransportGroups) -> TransportStopCategories:
 
-    transport_groups: TransportGroups = transport_group_retriever.calculate_transport_groups(registry)
     intervals: Intervals = \
         interval_retriever.get_transport_stop_intervals(registry, due_date_config, [*transport_groups])
 

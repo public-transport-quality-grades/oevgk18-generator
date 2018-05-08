@@ -115,3 +115,6 @@ ENV/
 
 # config
 generator_config.yml
+
+# results
+results/
