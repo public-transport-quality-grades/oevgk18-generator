@@ -8,4 +8,7 @@ class Isochrone:
         self.polygon: Polygon = polygon
 
     def __repr__(self):
-        return f"{{distance: {self.distance}, polygon: {self.polygon}}}"
+        return str(self.__dict__)
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__

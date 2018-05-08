@@ -92,8 +92,7 @@ transport-stop-categories:
           - C: 7
 
 public-transport-ratings:
-    - min-seconds: 0
-      max-seconds: 300
+    - max-seconds: 300
       transport-stop-categories:
           - 1: 'A' # i.e. transport stop category I gets a transport stop rating 'A'
           - 2: 'A'
@@ -103,8 +102,7 @@ public-transport-ratings:
           - 6: 'E'
           - 7: 'F'
     
-    - min-seconds: 301
-      max-seconds: 450
+    - max-seconds: 450
       transport-stop-categories:
           - 1: 'A'
           - 2: 'B'
@@ -112,16 +110,14 @@ public-transport-ratings:
           - 4: 'D'
           - 5: 'E'
     
-    - min-seconds: 451
-      max-seconds: 600
+    - max-seconds: 600
       transport-stop-categories:
           - 1: 'B'
           - 2: 'C'
           - 3: 'D'
           - 4: 'E'
     
-    - min-seconds: 601
-      max-seconds: 900
+    - max-seconds: 900
       transport-stop-categories:
           - 1: 'C'
           - 2: 'D'
@@ -276,10 +272,6 @@ SCHEMA = {
                 "$id": "/properties/public-transport-ratings/items",
                 "type": "object",
                 "properties": {
-                    "min-seconds": {
-                        "$id": "/properties/public-transport-ratings/items/properties/min-seconds",
-                        "type": "integer"
-                    },
                     "max-seconds": {
                         "$id": "/properties/public-transport-ratings/items/properties/max-seconds",
                         "type": "integer"
@@ -318,7 +310,7 @@ SCHEMA = {
                     }
                 },
                 "additionalProperties": False,
-                "required": ["min-seconds", "max-seconds", "transport-stop-categories"]
+                "required": ["max-seconds", "transport-stop-categories"]
 
             }
         }

@@ -1,7 +1,7 @@
 import logging
 from contextlib import contextmanager
 from records import Database, Record
-from typing import List, Dict, Tuple
+from typing import List, Optional
 from .util import geometry_parser, geojson_writer
 from ..business.model.isochrone import Isochrone
 
@@ -30,26 +30,30 @@ def _mark_relevant_roads(db: Database, max_relevant_distance: float):
     transaction.commit()
 
 
-def calc_isochrones(db: Database, boundaries: List[int]) -> Dict[str, Isochrone]:
-    stop_isochrones = {}
-    for (uic_ref, nearest_vertex_id) in _retrieve_uic_ref_vertex_mapping(db):
-        logger.info(f"Calculate isochrones for {uic_ref}")
-        transaction = db.transaction()
-        rows = db.query("""SELECT * FROM isochrones(:node_id, :boundaries)""",
-                        node_id=nearest_vertex_id,
-                        boundaries=boundaries
-                        ).all()
-        isochrones = _map_isochrones(rows)
-        stop_isochrones[uic_ref] = isochrones
-        transaction.commit()
-    return stop_isochrones
+def calc_isochrones(db: Database, uic_ref: int, boundaries: List[int]) -> List[Isochrone]:
+    logger.info(f"Calculate isochrones for {uic_ref}")
 
-
-def _retrieve_uic_ref_vertex_mapping(db: Database) -> List[Tuple[int, int]]:
+    nearest_vertex_id = _retrieve_nearest_vertex(db, uic_ref)
+    if not nearest_vertex_id:
+        return list()
     transaction = db.transaction()
-    rows = db.query("""SELECT stop_uic_ref, nearest_vertex_id FROM stop_vertex_mapping;""").all()
+    rows = db.query("""SELECT * FROM isochrones(:node_id, :boundaries)""",
+                    node_id=nearest_vertex_id,
+                    boundaries=boundaries
+                    ).all()
+    isochrones = _map_isochrones(rows)
     transaction.commit()
-    return [(row['stop_uic_ref'], row['nearest_vertex_id']) for row in rows]
+    return isochrones
+
+
+def _retrieve_nearest_vertex(db: Database, uic_ref: int) -> Optional[int]:
+    transaction = db.transaction()
+    row = db.query("""SELECT nearest_vertex_id FROM stop_vertex_mapping
+                       WHERE stop_uic_ref = :uic_ref;""", uic_ref=uic_ref).first()
+    transaction.commit()
+    if row:
+        return row['nearest_vertex_id']
+    return None
 
 
 def _map_isochrones(rows: List[Record]) -> List[Isochrone]:
