@@ -25,15 +25,13 @@ def calculate_transport_groups(registry) -> TransportGroups:
         direction_count_stop_mapping = \
             timetable_service.get_count_of_distinct_next_stops(db, [stop.uic_ref for stop in railway_lines])
         railway_groups = {railway_line.uic_ref:
-                          _calculate_transport_group(railway_line,
-                                                     direction_count_stop_mapping[railway_line.uic_ref],
+                          _calculate_transport_group(railway_line, direction_count_stop_mapping[railway_line.uic_ref],
                                                      min_junction_directions)
                           for railway_line in railway_lines}
 
         other_groups = {line.uic_ref: _calculate_transport_group(line) for line in other_lines}
 
-        other_groups.update(railway_groups)
-        return other_groups
+        return {**other_groups, **railway_groups}
 
 
 def _calculate_transport_group(transport_stop: TransportStop,
@@ -41,14 +39,10 @@ def _calculate_transport_group(transport_stop: TransportStop,
     if transport_stop.is_railway_line():
         if _is_railway_junction(direction_count, min_junction_directions):
             return PublicTransportGroup.A
-        if _is_railway(direction_count):
+        else:
             return PublicTransportGroup.B
     return PublicTransportGroup.C
 
 
 def _is_railway_junction(railway_direction_count: int, min_directions: int) -> bool:
     return railway_direction_count >= min_directions
-
-
-def _is_railway(railway_direction_count: int) -> bool:
-    return railway_direction_count > 0
