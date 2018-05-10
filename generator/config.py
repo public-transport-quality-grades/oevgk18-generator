@@ -8,8 +8,9 @@ database-connections:
     public-transport-stops: "postgres://test:test@localhost:5432/oevgk18"
     
 isochrones:
-    - max-relevant-distance: 1.280 # 900s * 1.4m/s = 1.280km
-      walking-speed: 1.4 # m/s
+    max-relevant-distance: 1.280 # 900s * 1.4m/s = 1.280km
+    edge-segment-length: 10 # segment size in meters with which the graph will be split up. The lower, the more accurate
+    walking-speed: 1.4 # m/s
 
 output:
     output-directory: "results/"
@@ -175,23 +176,23 @@ SCHEMA = {
         },
         "isochrones": {
             "$id": "/properties/isochrones",
-            "type": "array",
-            "items": {
-                "$id": "/properties/isochrones/items",
-                "type": "object",
-                "properties": {
-                    "max-relevant-distance": {
-                        "$id": "/properties/isochrones/items/properties/max-relevant-distance",
-                        "type": "number"
-                    },
-                    "walking-speed": {
-                        "$id": "/properties/isochrones/items/properties/walking-speed",
-                        "type": "number"
-                    }
+            "type": "object",
+            "properties": {
+                "max-relevant-distance": {
+                    "$id": "/properties/isochrones/properties/max-relevant-distance",
+                    "type": "number"
+                },
+                "edge-segment-length": {
+                    "$id": "/properties/isochrones/properties/edge-segment-length",
+                    "type": "number"
+                },
+                "walking-speed": {
+                    "$id": "/properties/isochrones/properties/walking-speed",
+                    "type": "number"
                 }
             },
             "additionalProperties": False,
-            "required": ["max-relevant-distance", "walking-speed"]
+            "required": ["max-relevant-distance", "edge-segment-length", "walking-speed"]
         },
         "output":  {
             "$id": "/properties/isochrones",

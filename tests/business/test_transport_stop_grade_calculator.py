@@ -33,9 +33,9 @@ def _mock_registry():
         'routing_engine_service': mock_routing_engine_service,
         'config': {
             'database-connections': {},
-            'isochrones': [
-                {'walking-speed': 1.5}
-            ],
+            'isochrones': {
+                'walking-speed': 1.5
+            },
             "public-transport-ratings": [
                 {
                     "max-seconds": 300,

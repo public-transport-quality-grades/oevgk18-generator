@@ -22,10 +22,10 @@ def mark_relevant_roads(db: Database, max_relevant_distance: float):
     transaction.commit()
 
 
-def split_routing_graph(db: Database):
-    logger.info("Split routing graph into segments to improve accuracy")
+def split_routing_graph(db: Database, edge_segment_length):
+    logger.info(f"Split routing graph into segments of length {edge_segment_length}m to improve accuracy")
     transaction = db.transaction()
-    db.query("SELECT segment_routing_graph(10)")
+    db.query("SELECT segment_routing_graph(:segment_length)", segment_length=edge_segment_length)
     transaction.commit()
 
 
