@@ -22,10 +22,14 @@ def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: Tr
     gradings_with_isochrones = {uic_ref: gradings for uic_ref, gradings in stop_gradings.items()
                                 if gradings}
 
-    feature_list = [_build_stop_features(styling_config, *stop_grading)
+    feature_map_list = [_build_stop_features(styling_config, *stop_grading)
                     for stop_grading in gradings_with_isochrones.items()]
 
-    features = list(chain.from_iterable(feature_list))  # flatten list
+    feature_map: List[Feature] = list(chain.from_iterable(feature_map_list))  # flatten list
+
+    feature_map.sort(key=lambda feature: feature['properties']['grade'], reverse=True)
+
+    features = list(map(lambda feature: Feature(**feature), feature_map))
 
     due_date_properties = _serialize_due_date(due_date_config)
 
@@ -34,11 +38,12 @@ def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: Tr
     _write_geojson(output_dir, due_date_config, feature_collection)
 
 
-def _build_stop_features(styling_config: dict, uic_ref: int, gradings: List[Grading]) -> List[Feature]:
+def _build_stop_features(styling_config: dict, uic_ref: int, gradings: List[Grading]) -> List[dict]:
 
-    return [Feature(
-        geometry=grading.isochrone.polygon, properties=_get_feature_properties(styling_config, uic_ref, grading.grade))
-        for grading in _sort_gradings(gradings)]
+    return [{
+        'geometry': grading.isochrone.polygon,
+        'properties': _get_feature_properties(styling_config, uic_ref, grading.grade)
+    } for grading in gradings]
 
 
 def _sort_gradings(gradings: List[Grading]) -> List[Grading]:
