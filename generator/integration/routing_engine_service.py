@@ -15,18 +15,31 @@ def db_connection(db_config: dict):
     connection.close()
 
 
-def calc_effective_kilometres(db: Database, max_relevant_distance: float):
-    _mark_relevant_roads(db, max_relevant_distance)
-    logger.info(f"Calculate effective kilometres")
-    transaction = db.transaction()
-    db.query("SELECT calc_effective_kilometres();")
-    transaction.commit()
-
-
-def _mark_relevant_roads(db: Database, max_relevant_distance: float):
+def mark_relevant_roads(db: Database, max_relevant_distance: float):
     logger.info(f"Mark nodes that are reachable in {max_relevant_distance} kilometres")
     transaction = db.transaction()
     db.query("""SELECT mark_relevant_ways(:max_relevant_distance);""", max_relevant_distance=max_relevant_distance)
+    transaction.commit()
+
+
+def split_routing_graph(db: Database):
+    logger.info("Split routing graph into segments to improve accuracy")
+    transaction = db.transaction()
+    db.query("SELECT segment_routing_graph(10)")
+    transaction.commit()
+
+
+def optimize_stop_vertex_mapping(db: Database):
+    logger.info("Locate public transport stops on the routing graph")
+    transaction = db.transaction()
+    db.query("SELECT optimize_stop_vertex_mapping()")
+    transaction.commit()
+
+
+def calc_effective_kilometres(db: Database):
+    logger.info("Integrate terrain data into the routing graph")
+    transaction = db.transaction()
+    db.query("SELECT calc_effective_kilometres();")
     transaction.commit()
 
 

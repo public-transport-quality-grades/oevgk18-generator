@@ -12,7 +12,10 @@ def prepare_routing_table(registry):
     db_config = config['database-connections']
     with routing_engine_service.db_connection(db_config) as db:
         max_relevant_distance = config["isochrones"][0]["max-relevant-distance"]
-        routing_engine_service.calc_effective_kilometres(db, max_relevant_distance)
+        routing_engine_service.mark_relevant_roads(db, max_relevant_distance)
+        routing_engine_service.split_routing_graph(db)
+        routing_engine_service.optimize_stop_vertex_mapping(db)
+        routing_engine_service.calc_effective_kilometres(db)
 
 
 def get_isochrones(registry, db, uic_ref: int, boundaries: List[float]) -> List[Isochrone]:
