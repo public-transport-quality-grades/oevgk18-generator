@@ -8,7 +8,7 @@ BEGIN
        END
    ) As new_geom
    FROM
-      (SELECT ST_LineMerge(routing.geom_way) AS the_geom, cost As length FROM routing where routing.id = gid_input) AS t
+      (SELECT ST_LineMerge(routing.geom_way) AS the_geom, km * 1000 As length FROM routing where routing.id = gid_input) AS t
           CROSS JOIN generate_series(0,10000) AS n WHERE n*segment_length/length < 1;
 END;
 $$ LANGUAGE plpgsql

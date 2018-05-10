@@ -10,7 +10,7 @@ DECLARE
 BEGIN
   FOR segment IN
     SELECT get_height(transform_to_2056(st_startpoint(geom))) AS start,
-           get_height(transform_to_2056(st_endpoint(geom))) AS destination FROM segments($1, 1)
+           get_height(transform_to_2056(st_endpoint(geom))) AS destination FROM segments($1, 10)
   LOOP
     IF segment.start < segment.destination THEN
       incline := incline + 1;
