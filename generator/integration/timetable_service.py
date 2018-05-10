@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 from typing import List, Dict
 from contextlib import contextmanager
@@ -14,21 +14,17 @@ def db_connection(db_config: dict):
     connection.close()
 
 
-def get_count_of_distinct_next_stops(db: Database) -> Dict[int, int]:
-    rows =  db.query("""WITH relevant_stops AS (
-                           SELECT s.stop_id
-                               FROM stops s
-                                  LEFT OUTER JOIN stops platforms on s.stop_id = platforms.parent_station
-                               WHERE s.stop_id LIKE '85%' AND s.parent_station IS NULL
-                                  GROUP BY s.stop_id
+def get_count_of_distinct_next_stops(db: Database, relevant_stops: List[str]) -> Dict[int, int]:
+    rows = db.query("""WITH relevant_stops AS (
+                           SELECT unnest(:relevant_stops) as uic_ref
                        )
-                       SELECT distinct nsm1.parent_station AS uic_ref, 
-                          COUNT(nsm2.stop_name) OVER (PARTITION BY nsm1.parent_station)
+                       SELECT distinct nsm1.uic_ref, 
+                          COUNT(nsm2.stop_name) OVER (PARTITION BY nsm1.uic_ref)
                           FROM relevant_stops 
-                              LEFT JOIN next_station_mapping nsm1 ON relevant_stops.stop_id = nsm1.parent_station
+                              LEFT JOIN next_station_mapping nsm1 ON relevant_stops.uic_ref = nsm1.uic_ref
                               INNER JOIN next_station_mapping nsm2 ON nsm1.trip_id = nsm2.trip_id
                           WHERE nsm1.stop_sequence = (nsm2.stop_sequence - 1)
-                              GROUP BY nsm1.parent_station, nsm2.stop_name;""").all()
+                              GROUP BY nsm1.uic_ref, nsm2.stop_name;""", relevant_stops=relevant_stops).all()
     return {int(row['uic_ref']): row['count'] for row in rows}
 
 
