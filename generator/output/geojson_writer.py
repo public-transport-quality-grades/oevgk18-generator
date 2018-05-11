@@ -23,9 +23,9 @@ def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: Tr
                                 if gradings}
 
     feature_map_list = [_build_stop_features(styling_config, *stop_grading)
-                    for stop_grading in gradings_with_isochrones.items()]
+                        for stop_grading in gradings_with_isochrones.items()]
 
-    feature_map: List[Feature] = list(chain.from_iterable(feature_map_list))  # flatten list
+    feature_map: List[dict] = list(chain.from_iterable(feature_map_list))  # flatten list
 
     feature_map.sort(key=lambda feature: feature['properties']['grade'], reverse=True)
 

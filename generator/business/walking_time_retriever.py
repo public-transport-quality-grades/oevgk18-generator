@@ -11,8 +11,12 @@ def prepare_routing_table(registry):
     config = registry["config"]
     db_config = config['database-connections']
     with routing_engine_service.db_connection(db_config) as db:
-        max_relevant_distance = config["isochrones"][0]["max-relevant-distance"]
-        routing_engine_service.calc_effective_kilometres(db, max_relevant_distance)
+        max_relevant_distance = config["isochrones"]["max-relevant-distance"]
+        edge_segment_length = config["isochrones"]["edge-segment-length"]
+        routing_engine_service.mark_relevant_roads(db, max_relevant_distance)
+        routing_engine_service.split_routing_graph(db, edge_segment_length)
+        routing_engine_service.optimize_stop_vertex_mapping(db)
+        routing_engine_service.calc_effective_kilometres(db)
 
 
 def get_isochrones(registry, db, uic_ref: int, boundaries: List[float]) -> List[Isochrone]:
@@ -41,5 +45,5 @@ def get_distance_grade_mapping(
 
 def _convert_walking_time_to_distance(config, walking_time: int) -> float:
     """Convert walking time in seconds to distance in meters"""
-    walking_speed = config["isochrones"][0]["walking-speed"]
+    walking_speed = config["isochrones"]["walking-speed"]
     return walking_speed * walking_time
