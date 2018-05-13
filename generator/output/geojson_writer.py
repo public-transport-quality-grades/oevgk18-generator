@@ -3,6 +3,8 @@ import logging
 from os import path, makedirs
 from itertools import chain
 import geojson
+import rtree
+
 from geojson import FeatureCollection, Feature
 from generator.business.model.grading import Grading
 from generator.business.util.public_transport_stop_grade import PublicTransportStopGrade
@@ -29,6 +31,8 @@ def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: Tr
 
     feature_map.sort(key=lambda feature: feature['properties']['grade'], reverse=True)
 
+    _clip_polygons_in_previous_grade_polygons(feature_map)
+
     features = list(map(lambda feature: Feature(**feature), feature_map))
 
     due_date_properties = _serialize_due_date(due_date_config)
@@ -40,8 +44,39 @@ def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: Tr
     _write_geojson(output_dir, due_date_config, feature_collection)
 
 
-def _build_stop_features(styling_config: dict, uic_ref: int, gradings: List[Grading]) -> List[dict]:
+def _clip_polygons_in_previous_grade_polygons(feature_map: List[dict]):
+    """
+    Clip polygons from underlying polygons.
+    Ex. polygons of grade A will be cut out from polygons of grade B.
+    """
+    index = _create_spatial_index(feature_map)
 
+    grades = [grade.name for grade in PublicTransportStopGrade]
+    prev_grade = grades[::-1][0]
+    for grade in grades[::-1][1:]:
+        for relevant_feature in filter(lambda feature: feature['properties']['grade'] == grade, feature_map):
+            intersected_features = list(_search_index(index, feature_map, relevant_feature))
+            for intersected_feature in intersected_features:
+                if intersected_feature['properties']['grade'] == prev_grade:
+                    intersected_feature['geometry'] = \
+                        intersected_feature['geometry'].difference(relevant_feature['geometry'])
+        prev_grade = grade
+
+
+def _create_spatial_index(feature_map: List[dict]):
+    """ create rtree index for fast intersection checking """
+    idx = rtree.index.Index()
+    for i, feature in enumerate(feature_map):
+        idx.insert(i, feature['geometry'].bounds)
+    return idx
+
+
+def _search_index(index, feature_map: List[dict], feature: dict):
+    """ search rtree index and return geometries that intersect with the feature """
+    return map(lambda i: feature_map[i], index.intersection(feature['geometry'].bounds))
+
+
+def _build_stop_features(styling_config: dict, uic_ref: int, gradings: List[Grading]) -> List[dict]:
     return [{
         'geometry': grading.isochrone.polygon,
         'properties': _get_feature_properties(styling_config, uic_ref, grading.grade)
