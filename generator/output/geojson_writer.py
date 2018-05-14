@@ -51,16 +51,15 @@ def _clip_polygons_in_previous_grade_polygons(feature_map: List[dict]):
     """
     index = _create_spatial_index(feature_map)
 
-    grades = [grade.name for grade in PublicTransportStopGrade]
-    prev_grade = grades[::-1][0]
-    for grade in grades[::-1][1:]:
+    grades = list(reversed([grade.name for grade in PublicTransportStopGrade]))
+    for i, grade in enumerate(grades[1:]):
         for relevant_feature in filter(lambda feature: feature['properties']['grade'] == grade, feature_map):
-            intersected_features = list(_search_index(index, feature_map, relevant_feature))
-            for intersected_feature in intersected_features:
-                if intersected_feature['properties']['grade'] == prev_grade:
-                    intersected_feature['geometry'] = \
-                        intersected_feature['geometry'].difference(relevant_feature['geometry'])
-        prev_grade = grade
+            for prev_grade in grades[0:(i + 1)]:
+                intersected_features = list(_search_index(index, feature_map, relevant_feature))
+                for intersected_feature in intersected_features:
+                    if intersected_feature['properties']['grade'] == prev_grade:
+                        intersected_feature['geometry'] = \
+                            intersected_feature['geometry'].difference(relevant_feature['geometry'])
 
 
 def _create_spatial_index(feature_map: List[dict]):

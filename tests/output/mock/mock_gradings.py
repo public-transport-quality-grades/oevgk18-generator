@@ -127,6 +127,91 @@ c_4_polygon = [
         46.853485334454284
     ]]
 
+b_5_polygon = [
+            [
+              9.51343059539795,
+              46.86382963439154
+            ],
+            [
+              9.509868621826172,
+              46.861042005044446
+            ],
+            [
+              9.51317310333252,
+              46.85743254360235
+            ],
+            [
+              9.520726203918455,
+              46.85752058213418
+            ],
+            [
+              9.522442817687988,
+              46.86203969954759
+            ],
+            [
+              9.51343059539795,
+              46.86382963439154
+            ]
+]
+
+a_5_polygon = [
+[
+              9.513988494873045,
+              46.862274448500976
+            ],
+            [
+              9.512829780578613,
+              46.860102981516896
+            ],
+            [
+              9.516520500183105,
+              46.85840095951342
+            ],
+            [
+              9.524030685424805,
+              46.86030839431691
+            ],
+            [
+              9.5216703414917,
+              46.861511510649535
+            ],
+            [
+              9.513988494873045,
+              46.862274448500976
+            ]
+]
+
+c_6_polygon = [
+[
+              9.520297050476074,
+              46.865267407682865
+            ],
+            [
+              9.518494606018066,
+              46.861276758360205
+            ],
+            [
+              9.524674415588377,
+              46.85813684781527
+            ],
+            [
+              9.53038215637207,
+              46.862245104937955
+            ],
+            [
+              9.526047706604004,
+              46.8653847752311
+            ],
+            [
+              9.520468711853027,
+              46.865267407682865
+            ],
+            [
+              9.520297050476074,
+              46.865267407682865
+            ]
+]
+
 
 def mock_gradings():
     # intersects b_1_polygon of lower grade
@@ -142,7 +227,17 @@ def mock_gradings():
     # intersects nothing
     grade_c_4 = _create_grading(PublicTransportStopGrade.C, c_4_polygon, 750)
 
-    return {1: [grade_a_1, grade_b_1], 2: [grade_a_2], 3: [grade_a_3], 4: [grade_c_4]}
+    # a_5_polygon intersects b_5_polygon and c_6_polygon intersects a_5_polygon and b_5_polygon
+    grade_a_5 = _create_grading(PublicTransportStopGrade.A, a_5_polygon, 300)
+    grade_b_5 = _create_grading(PublicTransportStopGrade.B, b_5_polygon, 500)
+    grade_c_6 = _create_grading(PublicTransportStopGrade.C, c_6_polygon, 750)
+
+    return {1: [grade_a_1, grade_b_1],
+            2: [grade_a_2],
+            3: [grade_a_3],
+            4: [grade_c_4],
+            5: [grade_a_5, grade_b_5],
+            6: [grade_c_6]}
 
 
 def _create_grading(grade: PublicTransportStopGrade, points: List[List[float]], distance: int) -> Grading:
