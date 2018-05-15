@@ -3,7 +3,7 @@ from ..context import generator
 from .mock import mock_timetable_service, mock_registry
 
 
-def test_calculate_transport_stop_interval_trivial():
+def test_calculate_stop_intervals_trivial():
     """example from the VISUM 12 book"""
     registry = mock_registry.get_registry(mock_timetable_service)
 
@@ -21,13 +21,13 @@ def test_calculate_transport_stop_interval_trivial():
         8503400: 2600
     }
 
-    result = generator.business.transport_stop_interval_retriever.get_transport_stop_intervals(
+    result = generator.business.stop_interval_calculator.calculate_stop_intervals(
         registry, due_date_config, stops)
 
     assert result == expected_interval
 
 
-def test_calculate_transport_stop_interval_regular():
+def test_calculate_stop_intervals_regular():
     # with more data, the algorithm gets closer to the "real" interval
     registry = mock_registry.get_registry(mock_timetable_service)
 
@@ -45,13 +45,13 @@ def test_calculate_transport_stop_interval_regular():
         8503125: 890.625  # 14 min 50s
     }
 
-    result = generator.business.transport_stop_interval_retriever.get_transport_stop_intervals(
+    result = generator.business.stop_interval_calculator.calculate_stop_intervals(
         registry, due_date_config, stops)
 
     assert result == expected_interval
 
 
-def test_calculate_transport_stop_interval_skewed():
+def test_calculate_stop_intervals_skewed():
     registry = mock_registry.get_registry(mock_timetable_service)
 
     stops = [
@@ -68,7 +68,7 @@ def test_calculate_transport_stop_interval_skewed():
         8591382: 3481.5  # 58.01 min
     }
 
-    result = generator.business.transport_stop_interval_retriever.get_transport_stop_intervals(
+    result = generator.business.stop_interval_calculator.calculate_stop_intervals(
         registry, due_date_config, stops)
 
     assert result == expected_interval

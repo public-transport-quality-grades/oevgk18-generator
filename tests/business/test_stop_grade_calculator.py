@@ -22,7 +22,7 @@ def test_calculate_transport_stop_grades():
         8591382: [Grading(fake_isochrone(450.0), StopGrade.C)],
     }
 
-    gradings = generator.business.transport_stop_grade_calculator.calculate_transport_stop_grades(
+    gradings = generator.business.stop_grade_calculator.calculate_stop_grades(
         _mock_registry(), TRANSPORT_STOP_RATINGS)
 
     assert gradings == expected_gradings

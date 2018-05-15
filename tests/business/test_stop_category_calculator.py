@@ -1,8 +1,8 @@
 from datetime import datetime
 from generator.business.model.stop_category import StopCategory
-from generator.business import transport_stop_interval_retriever, transport_group_retriever
-from generator.business import transport_stop_rating_calculator
-from .mock import mock_timetable_service, mock_transport_group_retriever, mock_interval_retriever, mock_registry
+from generator.business import stop_interval_calculator, transport_group_retriever
+from generator.business import stop_category_calculator
+from .mock import mock_timetable_service, mock_transport_group_retriever, mock_interval_calculator, mock_registry
 
 
 def test_calculate_transport_stop_ratings(monkeypatch):
@@ -10,9 +10,9 @@ def test_calculate_transport_stop_ratings(monkeypatch):
     monkeypatch.setattr(transport_group_retriever, 'calculate_transport_groups',
                         lambda reg: mock_transport_group_retriever.calculate_transport_groups(reg))
 
-    monkeypatch.setattr(transport_stop_interval_retriever, 'get_transport_stop_intervals',
+    monkeypatch.setattr(stop_interval_calculator, 'calculate_stop_intervals',
                         lambda reg, due_date_conf, stops:
-                        mock_interval_retriever.get_transport_stop_intervals(reg, due_date_conf, stops))
+                        mock_interval_calculator.calculate_stop_intervals(reg, due_date_conf, stops))
 
     due_date_config = {
         'due-date': datetime(2018, 4, 23),
@@ -28,7 +28,7 @@ def test_calculate_transport_stop_ratings(monkeypatch):
 
     transport_groups = mock_transport_group_retriever.calculate_transport_groups(registry)
 
-    stop_categories = transport_stop_rating_calculator.calculate_transport_stop_ratings(
+    stop_categories = stop_category_calculator.get_stop_categories(
         registry, due_date_config, transport_groups)
     assert len(stop_categories) == len(expected_stop_categories)
     assert stop_categories == expected_stop_categories
