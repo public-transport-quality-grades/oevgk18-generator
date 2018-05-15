@@ -1,4 +1,10 @@
+dist: trusty
+sudo: false
 language: python
+addons:
+  apt:
+    packages:
+      - libspatialite3
 python:
   - "3.6"
 cache:
