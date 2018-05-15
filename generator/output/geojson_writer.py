@@ -3,11 +3,11 @@ import logging
 from os import path, makedirs
 from itertools import chain
 import geojson
-import rtree
 
 from geojson import FeatureCollection, Feature
 from generator.business.model.grading import Grading
 from generator.business.util.public_transport_stop_grade import PublicTransportStopGrade
+from generator.output.util import geometry_clipper
 
 
 logger = logging.getLogger(__name__)
@@ -21,19 +21,16 @@ def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: Tr
     styling_config = output_config['styling']
     output_dir = output_config['output-directory']
 
-    gradings_with_isochrones = {uic_ref: gradings for uic_ref, gradings in stop_gradings.items()
-                                if gradings}
-
     feature_map_list = [_build_stop_features(styling_config, *stop_grading)
-                        for stop_grading in gradings_with_isochrones.items()]
+                        for stop_grading in stop_gradings.items()]
 
     feature_map: List[dict] = list(chain.from_iterable(feature_map_list))  # flatten list
 
     feature_map.sort(key=lambda feature: feature['properties']['grade'], reverse=True)
 
-    _clip_polygons_in_previous_grade_polygons(feature_map)
+    clipped_features = geometry_clipper.clip_polygons_in_previous_grade_polygons(feature_map)
 
-    features = list(map(lambda feature: Feature(**feature), feature_map))
+    features = list(map(lambda feature: Feature(**feature), clipped_features))
 
     due_date_properties = _serialize_due_date(due_date_config)
 
@@ -42,37 +39,6 @@ def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: Tr
     feature_collection = geojson.FeatureCollection(features=features, colors=color_config, **due_date_properties)
 
     _write_geojson(output_dir, due_date_config, feature_collection)
-
-
-def _clip_polygons_in_previous_grade_polygons(feature_map: List[dict]):
-    """
-    Clip polygons from underlying polygons.
-    Ex. polygons of grade A will be cut out from polygons of grade B.
-    """
-    index = _create_spatial_index(feature_map)
-
-    grades = list(reversed([grade.name for grade in PublicTransportStopGrade]))
-    for i, grade in enumerate(grades[1:]):
-        for relevant_feature in filter(lambda feature: feature['properties']['grade'] == grade, feature_map):
-            for prev_grade in grades[0:(i + 1)]:
-                intersected_features = list(_search_index(index, feature_map, relevant_feature))
-                for intersected_feature in intersected_features:
-                    if intersected_feature['properties']['grade'] == prev_grade:
-                        intersected_feature['geometry'] = \
-                            intersected_feature['geometry'].difference(relevant_feature['geometry'])
-
-
-def _create_spatial_index(feature_map: List[dict]):
-    """ create rtree index for fast intersection checking """
-    idx = rtree.index.Index()
-    for i, feature in enumerate(feature_map):
-        idx.insert(i, feature['geometry'].bounds)
-    return idx
-
-
-def _search_index(index, feature_map: List[dict], feature: dict):
-    """ search rtree index and return geometries that intersect with the feature """
-    return map(lambda i: feature_map[i], index.intersection(feature['geometry'].bounds))
 
 
 def _build_stop_features(styling_config: dict, uic_ref: int, gradings: List[Grading]) -> List[dict]:
