@@ -2,7 +2,7 @@ import sys
 import time
 import logging
 
-from generator.business import rating_generator
+from generator.business import core
 from generator.ui import cli
 from generator.integration import routing_engine_service, timetable_service, transport_stop_service
 from generator.output import geojson_writer
@@ -45,7 +45,7 @@ def main():
     input_params = ['some', 'params']
     registry = wire()
     setup_logging(verbose=True)
-    rating_generator.start(registry, input_params)
+    core.calculate_quality_grades(registry, input_params)
 
 
 if __name__ == "__main__":

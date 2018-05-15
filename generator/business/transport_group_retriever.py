@@ -1,8 +1,7 @@
 from typing import Dict, List
 import logging
 from .model.transport_stop import TransportStop
-from .model.route_type import RouteType
-from .util.public_transport_group import PublicTransportGroup
+from .model.public_transport_group import PublicTransportGroup
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,5 @@
-import pytest
-
 from ..context import generator
-from generator.business.util.public_transport_group import PublicTransportGroup
+from generator.business.model.public_transport_group import PublicTransportGroup
 from .mock import mock_timetable_service, mock_transport_stop_service, mock_registry
 
 

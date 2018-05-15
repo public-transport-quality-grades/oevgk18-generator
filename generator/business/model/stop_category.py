@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class PublicTransportStopCategory(Enum):
+class StopCategory(Enum):
     I = 1
     II = 2
     III = 3

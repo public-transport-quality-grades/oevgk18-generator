@@ -4,7 +4,7 @@ from shapely.geometry import Polygon
 
 from generator.business.model.grading import Grading
 from generator.business.model.isochrone import Isochrone
-from generator.business.util.public_transport_stop_grade import PublicTransportStopGrade
+from generator.business.model.stop_grade import StopGrade
 
 a_1_polygon = [
     [
@@ -215,6 +215,7 @@ c_6_polygon = [
     ]
 ]
 
+
 c_7_polygon = [
     [
         9.509096145629881,
@@ -264,7 +265,7 @@ d_8_polygon = [
 
 def mock_gradings_non_intercepting():
     # intersects nothing
-    grade_c_4 = _create_grading(PublicTransportStopGrade.C, c_4_polygon, 750)
+    grade_c_4 = _create_grading(StopGrade.C, c_4_polygon, 750)
     return {
         4: [grade_c_4]
     }
@@ -272,9 +273,9 @@ def mock_gradings_non_intercepting():
 
 def mock_gradings_intercepting_same_grade():
     # intersects a_3_polygon of same grade
-    grade_a_2 = _create_grading(PublicTransportStopGrade.A, a_2_polygon, 300)
+    grade_a_2 = _create_grading(StopGrade.A, a_2_polygon, 300)
     # intersects a_2_polygon of same grade
-    grade_a_3 = _create_grading(PublicTransportStopGrade.A, a_3_polygon, 300)
+    grade_a_3 = _create_grading(StopGrade.A, a_3_polygon, 300)
     return {
         2: [grade_a_2],
         3: [grade_a_3]
@@ -283,9 +284,9 @@ def mock_gradings_intercepting_same_grade():
 
 def mock_gradings_same_uic_ref_overlapping():
     # intersects b_1_polygon of lower grade with same uic_ref
-    grade_a_1 = _create_grading(PublicTransportStopGrade.A, a_1_polygon, 300)
+    grade_a_1 = _create_grading(StopGrade.A, a_1_polygon, 300)
     # intersects a_1_polygon of higher grade with same uic_ref
-    grade_b_1 = _create_grading(PublicTransportStopGrade.B, b_1_polygon, 500)
+    grade_b_1 = _create_grading(StopGrade.B, b_1_polygon, 500)
     return {
         1: [grade_a_1, grade_b_1]
     }
@@ -293,8 +294,8 @@ def mock_gradings_same_uic_ref_overlapping():
 
 def mock_gradings_different_uic_ref_overlapping():
     # d_8_polygon is completely overlapped by c_7_polygon and thus will be deleted
-    grade_c_7 = _create_grading(PublicTransportStopGrade.C, c_7_polygon, 750)
-    grade_d_8 = _create_grading(PublicTransportStopGrade.D, d_8_polygon, 1000)
+    grade_c_7 = _create_grading(StopGrade.C, c_7_polygon, 750)
+    grade_d_8 = _create_grading(StopGrade.D, d_8_polygon, 1000)
     return {
         7: [grade_c_7],
         8: [grade_d_8]
@@ -303,16 +304,16 @@ def mock_gradings_different_uic_ref_overlapping():
 
 def mock_gradings_different_uic_ref_and_grades():
     # a_5_polygon intersects b_5_polygon and c_6_polygon intersects a_5_polygon and b_5_polygon
-    grade_a_5 = _create_grading(PublicTransportStopGrade.A, a_5_polygon, 300)
-    grade_b_5 = _create_grading(PublicTransportStopGrade.B, b_5_polygon, 500)
-    grade_c_6 = _create_grading(PublicTransportStopGrade.C, c_6_polygon, 750)
+    grade_a_5 = _create_grading(StopGrade.A, a_5_polygon, 300)
+    grade_b_5 = _create_grading(StopGrade.B, b_5_polygon, 500)
+    grade_c_6 = _create_grading(StopGrade.C, c_6_polygon, 750)
     return {
         5: [grade_a_5, grade_b_5],
         6: [grade_c_6]
     }
 
 
-def _create_grading(grade: PublicTransportStopGrade, points: List[List[float]], distance: int) -> Grading:
+def _create_grading(grade: StopGrade, points: List[List[float]], distance: int) -> Grading:
     isochrone = _create_isochrone(points, distance)
     return Grading(isochrone, grade)
 

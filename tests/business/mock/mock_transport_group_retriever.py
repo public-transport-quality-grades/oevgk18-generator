@@ -1,4 +1,4 @@
-from generator.business.util.public_transport_group import PublicTransportGroup
+from generator.business.model.public_transport_group import PublicTransportGroup
 
 
 def calculate_transport_groups(registry):

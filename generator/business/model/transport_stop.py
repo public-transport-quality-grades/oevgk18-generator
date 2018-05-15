@@ -16,5 +16,4 @@ class TransportStop:
         return any(route_type == RouteType.SUBWAY or route_type == RouteType.RAIL for route_type in self.route_types)
 
     def __repr__(self):
-        return f"{{uic_name: {self.uic_name}, uic_ref: {self.uic_ref}," \
-               f" location: {self.location}, platforms: {self.route_types}}}"
+        return str(self.__dict__)

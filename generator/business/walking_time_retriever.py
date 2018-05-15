@@ -1,9 +1,9 @@
 from typing import List, Dict
 from .model.isochrone import Isochrone
-from .util.public_transport_stop_category import PublicTransportStopCategory
-from .util.public_transport_stop_grade import PublicTransportStopGrade
+from .model.stop_category import StopCategory
+from .model.stop_grade import StopGrade
 
-DistanceGradeMapping = Dict[float, PublicTransportStopGrade]
+DistanceGradeMapping = Dict[float, StopGrade]
 
 
 def prepare_routing_table(registry):
@@ -26,7 +26,7 @@ def get_isochrones(registry, db, uic_ref: int, boundaries: List[float]) -> List[
 
 
 def get_distance_grade_mapping(
-        config: dict, stop_rating: PublicTransportStopCategory) -> DistanceGradeMapping:
+        config: dict, stop_rating: StopCategory) -> DistanceGradeMapping:
     """Determine which walking times (= isochrone distance) with which grades have to be calculated"""
     distance_grades = {}
     ratings_config: list = config['public-transport-ratings']
@@ -37,7 +37,7 @@ def get_distance_grade_mapping(
 
         for mapping in mappings:
             if stop_rating.value in mapping:
-                distance_grades[distance] = PublicTransportStopGrade(mapping[stop_rating.value])
+                distance_grades[distance] = StopGrade(mapping[stop_rating.value])
                 break
 
     return distance_grades

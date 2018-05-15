@@ -1,21 +1,21 @@
 from typing import List, Dict
 import logging
-from .util.public_transport_stop_category import PublicTransportStopCategory
-from .util.public_transport_group import PublicTransportGroup
-from ..business.model.isochrone import Isochrone
-from ..business.model.grading import Grading
+from .model.stop_category import StopCategory
+from .model.public_transport_group import PublicTransportGroup
+from .model.isochrone import Isochrone
+from .model.grading import Grading
 from . import transport_stop_rating_calculator, walking_time_retriever, transport_group_retriever
 from . import transport_stop_grade_calculator
 
 logger = logging.getLogger(__name__)
 
-TransportStopCategories = Dict[int, PublicTransportStopCategory]
+TransportStopCategories = Dict[int, StopCategory]
 Isochrones = Dict[int, List[Isochrone]]
 TransportStopGradings = Dict[int, List[Grading]]
 TransportGroups = Dict[int, PublicTransportGroup]
 
 
-def start(registry: dict, params):
+def calculate_quality_grades(registry: dict, params):
     cli = registry['ui']
     cli.parse_params(params)
     output_writer = registry['output_writer']

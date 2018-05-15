@@ -1,7 +1,5 @@
-import pytest
-
 from datetime import datetime
-from generator.business.util.public_transport_stop_category import PublicTransportStopCategory
+from generator.business.model.stop_category import StopCategory
 from generator.business import transport_stop_interval_retriever, transport_group_retriever
 from generator.business import transport_stop_rating_calculator
 from .mock import mock_timetable_service, mock_transport_group_retriever, mock_interval_retriever, mock_registry
@@ -22,9 +20,9 @@ def test_calculate_transport_stop_ratings(monkeypatch):
         'upper-bound': '11:00'
     }
     expected_stop_categories = {
-        8503400: PublicTransportStopCategory.I,
-        8503125: PublicTransportStopCategory.IV,
-        8591382: PublicTransportStopCategory.VII,
+        8503400: StopCategory.I,
+        8503125: StopCategory.IV,
+        8591382: StopCategory.VII,
         8593245: None
     }
 

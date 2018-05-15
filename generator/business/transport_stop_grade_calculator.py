@@ -1,14 +1,14 @@
 from typing import Dict, List, Optional
 import logging
-from .util.public_transport_stop_category import PublicTransportStopCategory
-from .util.public_transport_stop_grade import PublicTransportStopGrade
+from .model.stop_category import StopCategory
+from .model.stop_grade import StopGrade
 from . import walking_time_retriever
 from .model.isochrone import Isochrone
 from .model.grading import Grading
 
-TransportStopCategories = Dict[int, PublicTransportStopCategory]
+TransportStopCategories = Dict[int, StopCategory]
 Isochrones = Dict[int, List[Isochrone]]
-DistanceGradeMapping = Dict[float, PublicTransportStopGrade]
+DistanceGradeMapping = Dict[float, StopGrade]
 TransportStopGradings = Dict[int, List[Grading]]
 
 logger = logging.getLogger(__name__)
@@ -29,7 +29,8 @@ def calculate_transport_stop_grades(
 
 
 def _calculate_grades_for_stop(
-        registry, db, uic_ref: int, stop_rating: PublicTransportStopCategory) -> List[Grading]:
+        registry, db, uic_ref: int, stop_rating: StopCategory) -> List[Grading]:
+
     logger.debug(f"Calculate gradings for {uic_ref}")
     config = registry['config']
     distance_grades: DistanceGradeMapping = walking_time_retriever.get_distance_grade_mapping(config, stop_rating)
@@ -42,7 +43,8 @@ def _calculate_grades_for_stop(
 
 
 def _map_isochrone_to_grading(
-        isochrone: Isochrone, distance_grades: Dict[float, PublicTransportStopGrade]) -> Optional[Grading]:
+        isochrone: Isochrone, distance_grades: Dict[float, StopGrade]) -> Optional[Grading]:
+
     grade = list([grade for distance, grade in distance_grades.items() if distance == isochrone.distance])
     if grade:
         return Grading(isochrone, grade[0])

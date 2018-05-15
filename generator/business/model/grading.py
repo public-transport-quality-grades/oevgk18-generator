@@ -1,12 +1,12 @@
 from .isochrone import Isochrone
-from ..util.public_transport_stop_grade import PublicTransportStopGrade
+from generator.business.model.stop_grade import StopGrade
 
 
 class Grading:
 
-    def __init__(self, isochrone: Isochrone, grade: PublicTransportStopGrade):
+    def __init__(self, isochrone: Isochrone, grade: StopGrade):
         self.isochrone: Isochrone = isochrone
-        self.grade: PublicTransportStopGrade = grade
+        self.grade: StopGrade = grade
 
     def __repr__(self):
         return str(self.__dict__)
