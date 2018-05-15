@@ -13,7 +13,7 @@ TRANSPORT_STOP_RATINGS = {
 }
 
 
-def test_calculate_transport_stop_grades():
+def test_calculate_stop_grades():
     expected_gradings = {
         8503400: [Grading(fake_isochrone(450.0), StopGrade.A),
                   Grading(fake_isochrone(1350.0), StopGrade.F)],

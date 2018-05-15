@@ -4,8 +4,7 @@ from .model.stop_category import StopCategory
 from .model.public_transport_group import PublicTransportGroup
 from .model.isochrone import Isochrone
 from .model.grading import Grading
-from . import transport_stop_rating_calculator, walking_time_retriever, transport_group_retriever
-from . import transport_stop_grade_calculator
+from . import stop_category_calculator, isochrone_retriever, transport_group_retriever, stop_grade_calculator
 
 logger = logging.getLogger(__name__)
 
@@ -21,16 +20,16 @@ def calculate_quality_grades(registry: dict, params):
     output_writer = registry['output_writer']
     config = registry['config']
 
-    walking_time_retriever.prepare_routing_table(registry)
-    transport_groups: TransportGroups = transport_group_retriever.calculate_transport_groups(registry)
+    isochrone_retriever.prepare_routing_table(registry)
+    transport_groups: TransportGroups = transport_group_retriever.get_transport_groups(registry)
 
     for due_date_config in config['due-dates']:
-        transport_ratings: TransportStopCategories = \
-            transport_stop_rating_calculator.calculate_transport_stop_ratings(
+        stop_categories: TransportStopCategories = \
+            stop_category_calculator.get_stop_categories(
                 registry, due_date_config, transport_groups)
 
-        stop_gradings: TransportStopGradings = transport_stop_grade_calculator.calculate_transport_stop_grades(
-            registry, transport_ratings)
+        stop_gradings: TransportStopGradings = stop_grade_calculator.calculate_stop_grades(
+            registry, stop_categories)
 
         output_writer.write_gradings(config['output'], due_date_config, stop_gradings)
 

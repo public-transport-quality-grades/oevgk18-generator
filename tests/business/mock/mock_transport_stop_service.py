@@ -1,5 +1,4 @@
 from typing import List
-
 from generator.business.model.transport_stop import TransportStop, RouteType
 
 

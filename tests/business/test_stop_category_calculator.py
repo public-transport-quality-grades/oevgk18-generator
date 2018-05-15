@@ -5,10 +5,10 @@ from generator.business import stop_category_calculator
 from .mock import mock_timetable_service, mock_transport_group_retriever, mock_interval_calculator, mock_registry
 
 
-def test_calculate_transport_stop_ratings(monkeypatch):
+def test_get_stop_categories(monkeypatch):
     registry = mock_registry.get_registry(mock_timetable_service)
-    monkeypatch.setattr(transport_group_retriever, 'calculate_transport_groups',
-                        lambda reg: mock_transport_group_retriever.calculate_transport_groups(reg))
+    monkeypatch.setattr(transport_group_retriever, 'get_transport_groups',
+                        lambda reg: mock_transport_group_retriever.get_transport_groups(reg))
 
     monkeypatch.setattr(stop_interval_calculator, 'calculate_stop_intervals',
                         lambda reg, due_date_conf, stops:
@@ -26,7 +26,7 @@ def test_calculate_transport_stop_ratings(monkeypatch):
         8593245: None
     }
 
-    transport_groups = mock_transport_group_retriever.calculate_transport_groups(registry)
+    transport_groups = mock_transport_group_retriever.get_transport_groups(registry)
 
     stop_categories = stop_category_calculator.get_stop_categories(
         registry, due_date_config, transport_groups)

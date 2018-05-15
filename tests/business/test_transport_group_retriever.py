@@ -12,5 +12,5 @@ def test_calculate_transport_groups():
     }
 
     registry = mock_registry.get_registry(mock_timetable_service, mock_transport_stop_service)
-    transport_groups = generator.business.transport_group_retriever.calculate_transport_groups(registry)
+    transport_groups = generator.business.transport_group_retriever.get_transport_groups(registry)
     assert transport_groups == expected_transport_groups

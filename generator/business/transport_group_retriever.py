@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 TransportGroups = Dict[int, PublicTransportGroup]
 
 
-def calculate_transport_groups(registry) -> TransportGroups:
+def get_transport_groups(registry) -> TransportGroups:
     timetable_service = registry['timetable_service']
     transport_stop_service = registry['transport_stop_service']
     db_config = registry['config']['database-connections']
@@ -24,17 +24,17 @@ def calculate_transport_groups(registry) -> TransportGroups:
         direction_count_stop_mapping = \
             timetable_service.get_count_of_distinct_next_stops(db, [stop.uic_ref for stop in railway_lines])
         railway_groups = {railway_line.uic_ref:
-                          _calculate_transport_group(railway_line, direction_count_stop_mapping[railway_line.uic_ref],
-                                                     min_junction_directions)
+                          _get_transport_group(railway_line, direction_count_stop_mapping[railway_line.uic_ref],
+                                               min_junction_directions)
                           for railway_line in railway_lines}
 
-        other_groups = {line.uic_ref: _calculate_transport_group(line) for line in other_lines}
+        other_groups = {line.uic_ref: _get_transport_group(line) for line in other_lines}
 
         return {**other_groups, **railway_groups}
 
 
-def _calculate_transport_group(transport_stop: TransportStop,
-                               direction_count: int = 0, min_junction_directions: int = 0) -> PublicTransportGroup:
+def _get_transport_group(transport_stop: TransportStop,
+                         direction_count: int = 0, min_junction_directions: int = 0) -> PublicTransportGroup:
     if transport_stop.is_railway_line():
         if _is_railway_junction(direction_count, min_junction_directions):
             return PublicTransportGroup.A
