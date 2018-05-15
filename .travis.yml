@@ -1,16 +1,15 @@
 dist: trusty
-sudo: false
+sudo: required
 language: python
-addons:
-  apt:
-    packages:
-      - libspatialite5
-      - libspatialite-dev
 python:
   - "3.6"
+addons:
+    apt:
+      update: true
 cache:
   - pip
 install:
+  - ./build/install-libspatialite.sh
   - pip install -r requirements.txt
   - pip install -r requirements-dev.txt
 script:
