@@ -33,7 +33,9 @@ def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: Tr
 
     due_date_properties = _serialize_due_date(due_date_config)
 
-    feature_collection = geojson.FeatureCollection(features=features, **due_date_properties)
+    color_config = styling_config['colors']
+
+    feature_collection = geojson.FeatureCollection(features=features, colors=color_config, **due_date_properties)
 
     _write_geojson(output_dir, due_date_config, feature_collection)
 
