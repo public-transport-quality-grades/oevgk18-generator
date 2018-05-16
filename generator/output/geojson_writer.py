@@ -28,7 +28,7 @@ def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: Tr
 
     feature_map.sort(key=lambda feature: feature['properties']['grade'], reverse=True)
 
-    clipped_features = geometry_clipper.clip_polygons_in_previous_grade_polygons(feature_map)
+    clipped_features = geometry_clipper.clip_polygons(feature_map)
 
     features = list(map(lambda feature: Feature(**feature), clipped_features))
 

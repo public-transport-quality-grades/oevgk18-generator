@@ -10,23 +10,23 @@ logger = logging.getLogger(__name__)
 TransportStopGradings = Dict[int, List[Grading]]
 
 
-def clip_polygons_in_previous_grade_polygons(feature_map: List[dict]) -> List[dict]:
+def clip_polygons(feature_map: List[dict]) -> List[dict]:
     """
-    Clip polygons from underlying polygons.
-    Ex. polygons of grade A will be cut out from polygons of grade B.
+    Clip polygons from other polygons in the same or lower class.
+    E.g. polygons of grade A will be cut out from polygons of grade A or grade B.
     """
-    clipped_features: List[dict] = {i: feature for i, feature in enumerate(feature_map)}
+    clipped_features: Dict[int, dict] = {i: feature for i, feature in enumerate(feature_map)}
     index = _create_spatial_index(clipped_features)
     grades = list(reversed([grade.name for grade in PublicTransportStopGrade]))
 
     for i, grade in enumerate(grades):
         grade_filtered_features = {k: v for (k, v) in clipped_features.items()
                                    if v['properties']['grade'] == grade and not v['geometry'].is_empty}
-        for feature_id, relevant_feature in grade_filtered_features.items():
+        for relevant_feature in grade_filtered_features.values():
             for index_id in _search_index(index, relevant_feature):
                 intersected_feature = clipped_features[index_id]
                 if _is_same_feature(relevant_feature, intersected_feature) or \
-                        intersected_feature['properties']['grade'] not in reversed(grades[:i+1]):
+                        intersected_feature['properties']['grade'] not in grades[:i+1]:
                     continue
 
                 try:
@@ -38,14 +38,13 @@ def clip_polygons_in_previous_grade_polygons(feature_map: List[dict]) -> List[di
                         _update_index(index, index_id, intersected_feature['geometry'], clipped_geom)
 
                     intersected_feature['geometry'] = clipped_geom
-                    clipped_features[index_id] = intersected_feature
                 except shapely.errors.TopologicalError as e:
                     #  TODO solve issue
                     logging.error(intersected_feature, relevant_feature, e)
     return list(filter(lambda feature: not feature['geometry'].is_empty, clipped_features.values()))
 
 
-def _create_spatial_index(feature_map: List[dict]):
+def _create_spatial_index(feature_map: Dict[int, dict]):
     """ create rtree index for fast intersection checking """
     idx = rtree.index.Index()
     for i, feature in feature_map.items():
