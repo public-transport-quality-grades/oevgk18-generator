@@ -9,7 +9,8 @@ services:
     - "5432:5432"
     environment:
       POSTGRES_USER: "test"
-      POSTGRES_PASSWORD: "test"
+      POSTGRES_PASSWORD: "xkGVsHsTHnkW9wpD"
+      PGPASSWORD: "xkGVsHsTHnkW9wpD" # must be the same as POSTGRES_PASSWORD
       POSTGRES_DB: "oevgk18"
     volumes:
       - sql-import:/sql-import
