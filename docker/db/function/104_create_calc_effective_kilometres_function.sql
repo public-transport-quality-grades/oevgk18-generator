@@ -35,9 +35,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION calc_effective_kilometres() RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION calc_effective_kilometres(start_id INTEGER, end_id INTEGER) RETURNS VOID AS $$
 BEGIN
-  UPDATE routing_segmented SET cost_effective = get_effective_kilometres(id);
+  UPDATE routing_segmented
+  SET cost_effective = get_effective_kilometres(id)
+  WHERE id >= start_id AND id <= end_id;
 END;
 $$ LANGUAGE plpgsql;
 

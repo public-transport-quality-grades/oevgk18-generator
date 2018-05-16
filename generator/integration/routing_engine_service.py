@@ -1,7 +1,9 @@
 import logging
+import os
 from contextlib import contextmanager
 from records import Database, Record
-from typing import List, Optional
+from typing import List, Optional, Iterable
+from concurrent.futures import ThreadPoolExecutor
 from .util import geometry_parser
 from ..business.model.isochrone import Isochrone
 
@@ -36,11 +38,41 @@ def optimize_stop_vertex_mapping(db: Database):
     transaction.commit()
 
 
-def calc_effective_kilometres(db: Database):
+def calc_effective_kilometres(db_config):
     logger.info("Integrate terrain data into the routing graph")
-    transaction = db.transaction()
-    db.query("SELECT calc_effective_kilometres();")
-    transaction.commit()
+    cpu_count = os.cpu_count()
+    with ThreadPoolExecutor() as executor:
+        futures = []
+        for start_id, end_id in _partition_effective_kilometres_calculation(db_config, cpu_count):
+            logger.debug(f"Start task with ids from {start_id} to {end_id}")
+            futures.append(executor.submit(_execute_calc_effective_kilometres, db_config, start_id, end_id))
+        for future in futures:
+            future.result()
+            logger.debug("Task completed")
+
+
+def _execute_calc_effective_kilometres(db_config, start_id: int, end_id: int) -> None:
+    with db_connection(db_config) as db:
+        transaction = db.transaction()
+        try:
+            db.query("SELECT calc_effective_kilometres(:start_id, :end_id);", start_id=start_id, end_id=end_id)
+        except Exception as ex:
+            logger.debug("Error in calc_effective_kilometres")
+        transaction.commit()
+
+
+def _partition_effective_kilometres_calculation(db_config, partitions: int) -> Iterable:
+    with db_connection(db_config) as db:
+        row_ids = db.query("SELECT id FROM routing_segmented ORDER BY id;").all()
+        routing_ids: List[int] = list(map(lambda row: row.id, row_ids))
+
+    row_count = len(routing_ids)
+    start_index: int = 0
+    for _ in range(partitions)[:-1]:
+        end_index = start_index + int(row_count / partitions)
+        yield routing_ids[start_index], routing_ids[end_index]
+        start_index = end_index + 1
+    yield routing_ids[start_index], routing_ids[-1]
 
 
 def calc_isochrones(db: Database, uic_ref: int, boundaries: List[int]) -> List[Isochrone]:
