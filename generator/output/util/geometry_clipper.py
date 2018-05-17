@@ -1,9 +1,11 @@
 from typing import List, Dict
-import rtree, shapely
+import rtree
+from shapely.errors import TopologicalError
 import logging
 
-from generator.business.model.grading import Grading
-from generator.business.util.public_transport_stop_grade import PublicTransportStopGrade
+from ...business.model.grading import Grading
+from ...business.util.public_transport_stop_grade import PublicTransportStopGrade
+from . import round_geometry
 
 logger = logging.getLogger(__name__)
 
@@ -29,19 +31,31 @@ def clip_polygons(feature_map: List[dict]) -> List[dict]:
                         intersected_feature['properties']['grade'] not in grades[:i+1]:
                     continue
 
-                try:
-                    clipped_geom = intersected_feature['geometry'].difference(relevant_feature['geometry'])
+                clipped_geom = _clip_geometry(relevant_feature['geometry'], intersected_feature['geometry'])
 
-                    if clipped_geom.is_empty:
-                        _delete_index(index, index_id, intersected_feature['geometry'])
-                    else:
-                        _update_index(index, index_id, intersected_feature['geometry'], clipped_geom)
+                if clipped_geom.is_empty:
+                    _delete_index(index, index_id, intersected_feature['geometry'])
+                else:
+                    _update_index(index, index_id, intersected_feature['geometry'], clipped_geom)
 
-                    intersected_feature['geometry'] = clipped_geom
-                except shapely.errors.TopologicalError as e:
-                    #  TODO solve issue
-                    logging.error(intersected_feature, relevant_feature, e)
+                intersected_feature['geometry'] = clipped_geom
+
     return list(filter(lambda feature: not feature['geometry'].is_empty, clipped_features.values()))
+
+
+def _clip_geometry(base_geometry, intersected_geometry):
+    try:
+        return intersected_geometry.difference(base_geometry)
+    except TopologicalError:
+        logger.debug(f"Geometry {base_geometry} or {intersected_geometry} is invalid")
+        logger.debug(f"Base valid: {base_geometry.is_valid}, intersected valid: {intersected_geometry.is_valid}")
+        try:
+            cleaned_intersected_geometry = intersected_geometry.buffer(0)
+            cleaned_base_geometry = base_geometry.buffer(0)
+            return cleaned_intersected_geometry.difference(cleaned_base_geometry)
+        except TopologicalError as ex:
+            logger.error(f"Geometry still invalid: {cleaned_base_geometry} or {cleaned_intersected_geometry}")
+            raise ex
 
 
 def _create_spatial_index(feature_map: Dict[int, dict]):
