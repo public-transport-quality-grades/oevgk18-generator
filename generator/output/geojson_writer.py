@@ -1,11 +1,11 @@
-from typing import List, Dict, Union
+from typing import List, Dict
 import logging
 from os import path, makedirs
 from itertools import chain
 import geojson
 from geojson import FeatureCollection, Feature
 from ..business.model.grading import Grading
-from ..business.util.public_transport_stop_grade import PublicTransportStopGrade
+from ..business.model.stop_grade import StopGrade
 from .util import geometry_clipper, round_geometry
 
 
@@ -54,7 +54,7 @@ def _sort_gradings(gradings: List[Grading]) -> List[Grading]:
     return sorted(gradings, key=lambda grading: grading.isochrone.distance, reverse=True)
 
 
-def _get_feature_properties(styling_config: dict, uic_ref: int, grade: PublicTransportStopGrade) -> dict:
+def _get_feature_properties(styling_config: dict, uic_ref: int, grade: StopGrade) -> dict:
     colors = styling_config['colors']
     if grade.value not in colors:
         logger.warning(f"No color defined for rating {grade.value}")

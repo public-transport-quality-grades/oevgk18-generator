@@ -4,8 +4,7 @@ from shapely.errors import TopologicalError
 import logging
 
 from ...business.model.grading import Grading
-from ...business.util.public_transport_stop_grade import PublicTransportStopGrade
-from . import round_geometry
+from ...business.model.stop_grade import StopGrade
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +18,7 @@ def clip_polygons(feature_map: List[dict]) -> List[dict]:
     """
     clipped_features: Dict[int, dict] = {i: feature for i, feature in enumerate(feature_map)}
     index = _create_spatial_index(clipped_features)
-    grades = list(reversed([grade.name for grade in PublicTransportStopGrade]))
+    grades = list(reversed([grade.name for grade in StopGrade]))
 
     for i, grade in enumerate(grades):
         grade_filtered_features = {k: v for (k, v) in clipped_features.items()

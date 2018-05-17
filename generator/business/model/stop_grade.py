@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class PublicTransportStopGrade(Enum):
+class StopGrade(Enum):
     A = 'A'
     B = 'B'
     C = 'C'

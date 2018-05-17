@@ -1,44 +1,44 @@
 from typing import List, Dict, Optional
 import logging
-from .util.public_transport_group import PublicTransportGroup
-from .util.public_transport_stop_category import PublicTransportStopCategory
-from . import transport_stop_interval_retriever as interval_retriever
+from .model.public_transport_group import PublicTransportGroup
+from .model.stop_category import StopCategory
+from . import stop_interval_calculator
 
 logger = logging.getLogger(__name__)
 
 TransportGroups = Dict[int, PublicTransportGroup]
 Intervals = Dict[int, Optional[float]]
-TransportStopCategories = Dict[int, PublicTransportStopCategory]
+TransportStopCategories = Dict[int, StopCategory]
 
 
-def calculate_transport_stop_ratings(
+def get_stop_categories(
         registry, due_date_config: dict, transport_groups: TransportGroups) -> TransportStopCategories:
 
     intervals: Intervals = \
-        interval_retriever.get_transport_stop_intervals(registry, due_date_config, [*transport_groups])
+        stop_interval_calculator.calculate_stop_intervals(registry, due_date_config, [*transport_groups])
 
-    return _calculate_transport_stop_categories(registry, transport_groups, intervals)
+    return _calculate_stop_categories(registry, transport_groups, intervals)
 
 
-def _calculate_transport_stop_categories(
+def _calculate_stop_categories(
         registry, transport_groups: TransportGroups, intervals: Intervals) -> TransportStopCategories:
     """Calculate the transport stop category (I - VII) of all transport stops"""
     category_config = registry['config']['transport-stop-categories']
-    return {stop_uic_ref: _calculate_transport_stop_category(
+    return {stop_uic_ref: _calculate_stop_category(
         stop_uic_ref, category_config, transport_groups[stop_uic_ref], intervals[stop_uic_ref])
         for stop_uic_ref in [*transport_groups]}
 
 
-def _calculate_transport_stop_category(uic_ref: int, category_configs, transport_group: PublicTransportGroup,
-                                       interval: Optional[float]) -> Optional[PublicTransportStopCategory]:
+def _calculate_stop_category(uic_ref: int, category_configs, transport_group: PublicTransportGroup,
+                             interval: Optional[float]) -> Optional[StopCategory]:
     logger.info(f"Calculating {uic_ref}")
     transport_group_mapping: List[dict] = _find_interval_range(category_configs, interval)
     for mapping in transport_group_mapping:
         if transport_group.value in mapping:
-            stop_category = PublicTransportStopCategory(mapping[transport_group.value])
+            stop_category = StopCategory(mapping[transport_group.value])
             logger.debug(f"{uic_ref}: {stop_category}, interval {interval}, group: {transport_group}")
             print(f"{uic_ref}: {stop_category}, interval {interval}, group: {transport_group}")
-            return PublicTransportStopCategory(mapping[transport_group.value])
+            return StopCategory(mapping[transport_group.value])
 
     return None
 

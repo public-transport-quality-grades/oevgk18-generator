@@ -1,5 +1,4 @@
 from shapely.geometry import Polygon, shape, mapping
-import geojson
 import logging
 
 PRECISION = 5
@@ -27,7 +26,7 @@ def _round_coordinates(coords) -> list:
     result = []
     try:
         return round(coords, PRECISION)
-    except TypeError as e:
+    except TypeError:
         for coord in coords:
             result.append(_round_coordinates(coord))
 

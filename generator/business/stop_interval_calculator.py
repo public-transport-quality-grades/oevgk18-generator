@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_transport_stop_intervals(
+def calculate_stop_intervals(
         registry: dict, due_date_config: dict, stops: List[int]) -> Dict[int, Optional[float]]:
     """Calculate the departure interval in specified time bounds of public transport stops"""
     logger.info("Calculate Transport stop intervals")
@@ -18,17 +18,17 @@ def get_transport_stop_intervals(
 
     all_departure_times: Dict = timetable_service.get_all_departure_times(db_config, due_date)
 
-    return {stop_uic_ref: _get_transport_stop_interval(stop_uic_ref, all_departure_times, start_time, end_time)
+    return {stop_uic_ref: _get_stop_interval(stop_uic_ref, all_departure_times, start_time, end_time)
             for stop_uic_ref in stops}
 
 
-def _get_transport_stop_interval(uic_ref: int, all_departures: Dict[int, List[datetime]],
-                                 start_time: datetime, end_time: datetime) -> Optional[float]:
+def _get_stop_interval(uic_ref: int, all_departures: Dict[int, List[datetime]],
+                       start_time: datetime, end_time: datetime) -> Optional[float]:
     stop_departures: List[datetime] = all_departures.get(uic_ref)
     if not stop_departures:
         logger.debug(f"{uic_ref}: No departures found")
         return None
-    interval = _calculate_transport_stop_interval(stop_departures, start_time, end_time)
+    interval = _calculate_stop_interval(stop_departures, start_time, end_time)
     if not interval:
         logger.debug(f"{uic_ref}: No departures in interval {start_time} - {end_time}")
         return None
@@ -36,8 +36,8 @@ def _get_transport_stop_interval(uic_ref: int, all_departures: Dict[int, List[da
     return interval
 
 
-def _calculate_transport_stop_interval(
-        stop_departures: List[datetime], start_time: datetime, end_time: datetime) -> Optional[float]:
+def _calculate_stop_interval(stop_departures: List[datetime], start_time: datetime,
+                             end_time: datetime) -> Optional[float]:
 
     departures: List[datetime] = list(filter(
         lambda t: _departure_time_inside_interval(t, start_time, end_time), stop_departures))
