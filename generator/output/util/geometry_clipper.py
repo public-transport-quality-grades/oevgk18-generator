@@ -5,7 +5,6 @@ import logging
 
 from ...business.model.grading import Grading
 from ...business.model.stop_grade import StopGrade
-from . import round_geometry
 
 logger = logging.getLogger(__name__)
 

@@ -1,4 +1,4 @@
-from typing import List, Dict, Union
+from typing import List, Dict
 import logging
 from os import path, makedirs
 from itertools import chain
