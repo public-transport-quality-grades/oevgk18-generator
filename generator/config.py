@@ -8,7 +8,7 @@ database-connections:
     public-transport-stops: "postgres://test:test@localhost:5432/oevgk18"
     
 isochrones:
-    max-relevant-distance: 1.280 # 900s * 1.4m/s = 1.280km
+    max-relevant-distance: 1280 # 900s * 1.4m/s = 1280m
     edge-segment-length: 10 # segment size in meters with which the graph will be split up. The lower, the more accurate
     walking-speed: 1.4 # m/s
 
