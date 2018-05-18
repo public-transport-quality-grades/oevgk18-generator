@@ -3,6 +3,7 @@ import rtree
 from shapely.errors import TopologicalError
 import logging
 
+from . import make_valid, round_geometry
 from ...business.model.grading import Grading
 from ...business.model.stop_grade import StopGrade
 
@@ -49,12 +50,15 @@ def _clip_geometry(base_geometry, intersected_geometry):
         logger.debug(f"Geometry {base_geometry} or {intersected_geometry} is invalid")
         logger.debug(f"Base valid: {base_geometry.is_valid}, intersected valid: {intersected_geometry.is_valid}")
         try:
-            cleaned_intersected_geometry = intersected_geometry.buffer(0)
-            cleaned_base_geometry = base_geometry.buffer(0)
+            rounded_intersected_geometry = round_geometry.round_geometry_coordinates(intersected_geometry)
+            rounded_base_geometry = round_geometry.round_geometry_coordinates(base_geometry)
+
+            cleaned_intersected_geometry = make_valid.make_geom_valid(rounded_intersected_geometry.buffer(0))
+            cleaned_base_geometry = make_valid.make_geom_valid(rounded_base_geometry.buffer(0))
             return cleaned_intersected_geometry.difference(cleaned_base_geometry)
-        except TopologicalError as ex:
-            logger.error(f"Geometry still invalid: {cleaned_base_geometry} or {cleaned_intersected_geometry}")
-            raise ex
+        except TopologicalError:
+            logger.debug(f"Geometry still invalid: {cleaned_base_geometry} or {cleaned_intersected_geometry}")
+            return base_geometry
 
 
 def _create_spatial_index(feature_map: Dict[int, dict]):
