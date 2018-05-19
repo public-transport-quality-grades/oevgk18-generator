@@ -1,1 +1,1 @@
-from . import geometry_clipper, round_geometry
+from . import round_geometry, make_valid
