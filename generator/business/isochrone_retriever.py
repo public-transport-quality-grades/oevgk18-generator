@@ -14,7 +14,7 @@ def prepare_routing_table(registry):
         max_relevant_distance = config["isochrones"]["max-relevant-distance"]
         edge_segment_length = config["isochrones"]["edge-segment-length"]
         routing_engine_service.mark_relevant_roads(db, max_relevant_distance)
-        routing_engine_service.split_routing_graph(db, edge_segment_length)
+        routing_engine_service.split_routing_graph(db_config, edge_segment_length)
         routing_engine_service.optimize_stop_vertex_mapping(db)
         routing_engine_service.calc_effective_kilometres(db_config)
 
