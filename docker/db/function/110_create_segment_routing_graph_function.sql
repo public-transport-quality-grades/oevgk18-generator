@@ -7,11 +7,10 @@ BEGIN
    CROSS JOIN segments(routing.geom_way, routing.km * 1000, segment_size_m) AS segs
    WHERE routing.relevant IS TRUE AND routing.km != 0;
 
- DROP TABLE IF EXISTS routing_segmented_vertices_pgr;
- PERFORM pgr_createTopology('routing_segmented', 0.00001, 'geom_way', 'id');
+   PERFORM calc_segmented_topology(10);
 
- UPDATE routing_segmented
-   SET cost = ST_LengthSpheroid(geom_way, 'SPHEROID["WGS84",6378137,298.25728]');
+   UPDATE routing_segmented
+     SET cost = ST_LengthSpheroid(geom_way, 'SPHEROID["WGS84",6378137,298.25728]');
 
 END;
 $$ LANGUAGE plpgsql;
