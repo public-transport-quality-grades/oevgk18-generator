@@ -6,7 +6,7 @@ import geojson
 from geojson import FeatureCollection, Feature
 from ..business.model.grading import Grading
 from ..business.model.stop_grade import StopGrade
-from .util import geometry_clipper, round_geometry
+from .util import round_geometry
 
 
 logger = logging.getLogger(__name__)
@@ -27,11 +27,7 @@ def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: Tr
 
     feature_map.sort(key=lambda feature: feature['properties']['grade'], reverse=True)
 
-    clipped_features = geometry_clipper.clip_polygons(feature_map)
-
-    _round_output_coordinates(clipped_features)
-
-    features = list(map(lambda feature: Feature(**feature), clipped_features))
+    features = list(map(lambda feature: Feature(**feature), feature_map))
 
     due_date_properties = _serialize_due_date(due_date_config)
 
@@ -68,11 +64,6 @@ def _get_feature_properties(styling_config: dict, uic_ref: int, grade: StopGrade
         'fill': color,
         'fill-opacity': styling_config['opacity']
     }
-
-
-def _round_output_coordinates(features: List[dict]):
-    for feature in features:
-        feature['geometry'] = round_geometry.round_geometry_coordinates(feature['geometry'])
 
 
 def _write_geojson(output_dir: str, due_date_config: dict, feature_collection: FeatureCollection):

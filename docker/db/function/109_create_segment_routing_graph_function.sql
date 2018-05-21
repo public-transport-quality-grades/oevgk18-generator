@@ -5,7 +5,7 @@ BEGIN
    SELECT segs.geom, routing.osm_id
    FROM routing
    CROSS JOIN segments(routing.geom_way, routing.km * 1000, segment_size_m) AS segs
-   WHERE routing.relevant IS TRUE;
+   WHERE routing.relevant IS TRUE AND routing.km != 0;
 
  DROP TABLE IF EXISTS routing_segmented_vertices_pgr;
  PERFORM pgr_createTopology('routing_segmented', 0.00001, 'geom_way', 'id');

@@ -18,9 +18,9 @@ BEGIN
     )
     SELECT boundary, polygon_geom as polygon
       FROM relevant_bounderies,
-      LATERAL pgr_pointsAsPolygon(
+      LATERAL st_buffer(pgr_pointsAsPolygon(
           'SELECT id::integer, ST_X(point)::float AS x, ST_Y(point)::float AS y FROM distances WHERE distance <= ' || boundary || ';',
-          0.00001
-      ) AS polygon_geom WHERE polygon_geom IS NOT NULL;
+          0.00005
+      ), 0.0001) AS polygon_geom WHERE polygon_geom IS NOT NULL;
   END;
 $$ LANGUAGE plpgsql
