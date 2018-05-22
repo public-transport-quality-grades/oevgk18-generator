@@ -37,9 +37,8 @@ docker-compose run db import-osm-data.sh
 
 ## Updating terrain data
 
-Make sure the terrain-file is placed under `docker/tooling/terrain-data` and adjust the path in the command.
+Make sure the terrain-file is placed under `docker/db/terrain-data` and adjust the path in the command.
 
 ``` bash
-docker-compose run tooling generate-terrain-data.sh /terrain-data/<terrain-filename>
-docker-compose run db import-terrain-data.sh
+docker-compose run db import-terrain-data.sh /terrain-data/<terrain-filename>
 ```
