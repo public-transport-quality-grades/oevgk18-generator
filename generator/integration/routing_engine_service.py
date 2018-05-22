@@ -9,6 +9,8 @@ from ..business.model.isochrone import Isochrone
 
 logger = logging.getLogger(__name__)
 
+ROUTING_TOPOLOGY_PARTITIONS = 100
+
 
 @contextmanager
 def db_connection(db_config: dict):
@@ -24,11 +26,41 @@ def mark_relevant_roads(db: Database, max_relevant_distance: float):
     transaction.commit()
 
 
-def split_routing_graph(db: Database, edge_segment_length):
+def split_routing_graph(db_config: dict, edge_segment_length):
     logger.info(f"Split routing graph into segments of length {edge_segment_length}m to improve accuracy")
-    transaction = db.transaction()
-    db.query("SELECT segment_routing_graph(:segment_length)", segment_length=edge_segment_length)
-    transaction.commit()
+    with db_connection(db_config) as db:
+        transaction = db.transaction()
+        db.query("SELECT segment_routing_graph(:segment_length)", segment_length=edge_segment_length)
+        transaction.commit()
+
+    _recreate_routing_topology(db_config)
+    _update_segmented_routing_costs(db_config)
+
+
+def _recreate_routing_topology(db_config):
+    """Run pgr_CreateTopology on newly segmented routing graph"""
+    with db_connection(db_config) as db:
+        min_max = db.query("SELECT min(id), max(id) FROM routing_segmented").first()
+        min_id = min_max.min
+        max_id = min_max.max
+    counter_min = min_id
+    while counter_min <= max_id:
+        counter_max = counter_min + int((max_id - min_id) / ROUTING_TOPOLOGY_PARTITIONS)
+        logger.debug(f"Create routing topolgy for IDs {counter_min} to {counter_max}")
+        with db_connection(db_config) as db:
+            transaction = db.transaction();
+            db.query("""SELECT pgr_createTopology('routing_segmented', 0.00001, 'geom_way', 'id', clean:= FALSE,
+                        rows_where:='id >= :min AND id < :max')""", min=counter_min, max=counter_max)
+            transaction.commit()
+        counter_min = counter_max
+
+
+def _update_segmented_routing_costs(db_config):
+    with db_connection(db_config) as db:
+        transaction = db.transaction()
+        db.query("""UPDATE routing_segmented SET
+          cost = ST_LengthSpheroid(geom_way, 'SPHEROID["WGS84",6378137,298.25728]')""")
+        transaction.commit()
 
 
 def optimize_stop_vertex_mapping(db: Database):
