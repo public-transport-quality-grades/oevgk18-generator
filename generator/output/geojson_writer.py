@@ -63,7 +63,7 @@ def _write_geojson(output_dir: str, due_date_config: dict, feature_collection: F
     output_path = path.join(output_dir, filename)
 
     with open(output_path, 'w') as fp:
-        geojson.dump(feature_collection, fp)
+        geojson.dump(feature_collection, fp, separators=(',', ':'))  # eliminate whitespace by using custom separators
 
 
 def _serialize_due_date(due_date_config: dict) -> dict:
