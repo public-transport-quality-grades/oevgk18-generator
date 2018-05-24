@@ -25,38 +25,38 @@ output:
             E: "#B3FF40"
             F: "#DEF325"
 due-dates:
-    - type-of-day: "Working Day"
-      type-of-interval: "Day"
+    - type-of-day: "Werktag"
+      type-of-interval: "Tag"
       due-date: "2018-11-13"
       lower-bound: '06:00'
       upper-bound: '20:00'
 
-    - type-of-day: "Working Day"
-      type-of-interval: "Evening"
+    - type-of-day: "Werktag"
+      type-of-interval: "Abend"
       due-date: "2018-11-13"
       lower-bound: '20:00'
       upper-bound: '00:00'
 
-    - type-of-day: "Saturday"
-      type-of-interval: "Day"
+    - type-of-day: "Samstag"
+      type-of-interval: "Tag"
       due-date: "2018-11-10"
       lower-bound: '06:00'
       upper-bound: '20:00'
 
-    - type-of-day: "Saturday"
-      type-of-interval: "Night"
+    - type-of-day: "Samstag"
+      type-of-interval: "Nacht"
       due-date: "2018-11-10"
       lower-bound: '01:00'
       upper-bound: '04:00'
 
-    - type-of-day: "Sunday"
-      type-of-interval: "Day"
+    - type-of-day: "Sonntag"
+      type-of-interval: "Tag"
       due-date: "2018-11-18"
       lower-bound: '06:00'
       upper-bound: '20:00'
 
-    - type-of-day: "Sunday"
-      type-of-interval: "Night"
+    - type-of-day: "Sonntag"
+      type-of-interval: "Nacht"
       due-date: "2018-11-18"
       lower-bound: '01:00'
       upper-bound: '04:00'
