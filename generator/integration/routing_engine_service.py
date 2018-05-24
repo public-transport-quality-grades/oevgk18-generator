@@ -48,7 +48,7 @@ def _recreate_routing_topology(db_config):
         counter_max = counter_min + int((max_id - min_id) / ROUTING_TOPOLOGY_PARTITIONS)
         logger.debug(f"Create routing topolgy for IDs {counter_min} to {counter_max}")
         with db_connection(db_config) as db:
-            transaction = db.transaction();
+            transaction = db.transaction()
             db.query("""SELECT pgr_createTopology('routing_segmented', 0.00001, 'geom_way', 'id', clean:= FALSE,
                         rows_where:='id >= :min AND id < :max')""", min=counter_min, max=counter_max)
             transaction.commit()
