@@ -6,7 +6,7 @@ import geojson
 from geojson import FeatureCollection, Feature
 from ..business.model.grading import Grading
 from ..business.model.stop_grade import StopGrade
-from .util import round_geometry
+from .util import round_geometry, filename_parser
 
 
 logger = logging.getLogger(__name__)
@@ -67,8 +67,7 @@ def _get_feature_properties(styling_config: dict, uic_ref: int, grade: StopGrade
 
 
 def _write_geojson(output_dir: str, due_date_config: dict, feature_collection: FeatureCollection):
-    filename = f"oevgk18_{due_date_config['due-date'].strftime('%Y-%m-%d')}_" \
-               f"{due_date_config['type-of-interval']}.geojson"
+    filename = filename_parser.get_filename_from_due_date_config(due_date_config)
 
     if not path.exists(output_dir):
         makedirs(output_dir)
