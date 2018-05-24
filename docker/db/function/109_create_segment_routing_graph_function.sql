@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION segment_routing_graph(segment_size_m INTEGER) RETURNS VOID AS $$
 BEGIN
+ DROP TABLE IF EXISTS routing_segmented_vertices_pgr;
  TRUNCATE routing_segmented;
  INSERT INTO routing_segmented(geom_way, osm_id)
    SELECT segs.geom, routing.osm_id
