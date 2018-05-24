@@ -15,10 +15,11 @@ def write_metadata(output_config: dict, due_dates: List[dict]):
         'generated-gradings': []
     }
 
-    for due_date_config in due_dates:
+    for index, due_date_config in enumerate(due_dates):
         due_date_properties = due_date_config.copy()
         due_date_properties['due-date'] = due_date_config['due-date'].isoformat()
         grading = {
+            'id': index,
             'filename': filename_parser.get_filename_from_due_date_config(due_date_config)
         }
         grading.update(due_date_properties)
