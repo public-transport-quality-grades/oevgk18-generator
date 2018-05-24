@@ -17,6 +17,13 @@ def db_connection(db_config: dict):
 def get_count_of_distinct_next_stops(db: Database, relevant_stops: List[str]) -> Dict[int, int]:
     rows = db.query("""WITH relevant_stops AS (
                            SELECT unnest(:relevant_stops) as uic_ref
+                       ),
+                       next_station_mapping AS (
+                          SELECT DISTINCT s.stop_name, t.trip_id, st.stop_sequence, s.uic_ref FROM stops s
+                                INNER JOIN stop_times st ON s.stop_id = st.stop_id
+                                INNER JOIN trips t ON st.trip_id = t.trip_id
+                                INNER JOIN routes r ON t.route_id = r.route_id
+                            WHERE r.route_type = 2 OR r.route_type = 1
                        )
                        SELECT distinct nsm1.uic_ref, 
                           COUNT(nsm2.stop_name) OVER (PARTITION BY nsm1.uic_ref)
