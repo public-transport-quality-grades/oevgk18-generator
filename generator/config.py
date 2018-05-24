@@ -14,6 +14,7 @@ isochrones:
 
 output:
     output-directory: "results/"
+    metadata-filename: "oevgk18_metadata.json"
     styling:
         opacity: 0.6
         colors:
@@ -199,6 +200,9 @@ SCHEMA = {
             "type": "object",
             "properties": {
                 "output-directory": {
+                    "type": "string"
+                },
+                "metadata-filename": {
                     "type": "string"
                 },
                 "styling": {

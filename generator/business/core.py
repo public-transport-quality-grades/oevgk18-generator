@@ -17,11 +17,12 @@ TransportGroups = Dict[int, PublicTransportGroup]
 def calculate_quality_grades(registry: dict, params):
     cli = registry['ui']
     cli.parse_params(params)
-    output_writer = registry['output_writer']
-    config = registry['config']
 
     isochrone_retriever.prepare_routing_table(registry)
     transport_groups: TransportGroups = transport_group_retriever.get_transport_groups(registry)
+
+    output_writer = registry['output_writer']
+    config = registry['config']
 
     for due_date_config in config['due-dates']:
         stop_categories: TransportStopCategories = \
@@ -37,3 +38,6 @@ def calculate_quality_grades(registry: dict, params):
                                     if gradings]
 
         logger.debug(f"Found {len(gradings_with_isochrones)} stops with isochrones")
+
+    metadata_writer = registry['metadata_writer']
+    metadata_writer.write_metadata(config['output'], config['due-dates'])

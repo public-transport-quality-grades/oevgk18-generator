@@ -5,7 +5,7 @@ import logging
 from generator.business import core
 from generator.ui import cli
 from generator.integration import routing_engine_service, timetable_service, transport_stop_service
-from generator.output import geojson_writer
+from generator.output import geojson_writer, metadata_writer
 from generator import config
 
 CONFIGURATION_PATH = "generator_config.yml"
@@ -19,6 +19,7 @@ def wire() -> dict:
     registry['routing_engine_service'] = routing_engine_service
     registry['timetable_service'] = timetable_service
     registry['output_writer'] = geojson_writer
+    registry['metadata_writer'] = metadata_writer
     registry['transport_stop_service'] = transport_stop_service
     registry['config'] = config.load_config(CONFIGURATION_PATH)
     return registry
