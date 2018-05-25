@@ -1,13 +1,5 @@
 result = {
   "type": "FeatureCollection",
-  "colors": {
-    "A": "#700038",
-    "B": "#BC42FF",
-    "C": "#9966FF",
-    "D": "#00B000",
-    "E": "#B3FF40",
-    "F": "#DEF325"
-  },
   "type-of-day": "Working Day",
   "type-of-interval": "Day",
   "due-date": "2018-11-13T00:00:00",
@@ -46,8 +38,6 @@ result = {
       "properties": {
         "uic_ref": 4,
         "grade": "C",
-        "fill": "#9966FF",
-        "fill-opacity": 0.6
       }
     }
   ]

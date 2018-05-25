@@ -15,48 +15,39 @@ isochrones:
 output:
     output-directory: "results/"
     metadata-filename: "oevgk18_metadata.json"
-    styling:
-        opacity: 0.6
-        colors:
-            A: "#700038" # color of transport stop rating A
-            B: "#BC42FF"
-            C: "#9966FF"
-            D: "#00B000"
-            E: "#B3FF40"
-            F: "#DEF325"
 due-dates:
-    - type-of-day: "Working Day"
-      type-of-interval: "Day"
+    - type-of-day: "Werktag"
+      type-of-interval: "Tag"
       due-date: "2018-11-13"
       lower-bound: '06:00'
       upper-bound: '20:00'
 
-    - type-of-day: "Working Day"
-      type-of-interval: "Evening"
+    - type-of-day: "Werktag"
+      type-of-interval: "Abend"
       due-date: "2018-11-13"
       lower-bound: '20:00'
       upper-bound: '00:00'
 
-    - type-of-day: "Saturday"
-      type-of-interval: "Day"
+    - type-of-day: "Samstag"
+      type-of-interval: "Tag"
       due-date: "2018-11-10"
       lower-bound: '06:00'
       upper-bound: '20:00'
 
-    - type-of-day: "Saturday"
-      type-of-interval: "Night"
+    - type-of-day: "Samstag"
+      type-of-interval: "Nacht"
       due-date: "2018-11-10"
       lower-bound: '01:00'
       upper-bound: '04:00'
 
-    - type-of-day: "Sunday"
-      type-of-interval: "Day"
+    - type-of-day: "Sonntag"
+      type-of-interval: "Tag"
       due-date: "2018-11-18"
       lower-bound: '06:00'
       upper-bound: '20:00'
 
-    - type-of-day: "Sunday"
-      type-of-interval: "Night"
+    - type-of-day: "Sonntag"
+      type-of-interval: "Nacht"
       due-date: "2018-11-18"
       lower-bound: '01:00'
       upper-bound: '04:00'
@@ -205,27 +196,9 @@ SCHEMA = {
                 "metadata-filename": {
                     "type": "string"
                 },
-                "styling": {
-                    "type": "object",
-                    "properties": {
-                        "opacity": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 1.0
-                        },
-                        "colors": {
-                            "properties": {},
-                            "additionalProperties": {
-                                "$ref": "#/definitions/color"
-                            }
-                        }
-                    },
-                    "additionalProperties": False,
-                    "requiredProperties": ["opacity", "colors"]
-                }
             },
             "additionalProperties": False,
-            "requiredProperties": ["output-directory", "styling"]
+            "requiredProperties": ["output-directory"]
         },
         "due-dates": {
             "$id": "/properties/due-dates",
