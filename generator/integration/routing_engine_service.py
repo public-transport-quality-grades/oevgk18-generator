@@ -66,7 +66,12 @@ def _update_segmented_routing_costs(db_config):
 def optimize_stop_vertex_mapping(db: Database):
     logger.info("Locate public transport stops on the routing graph")
     transaction = db.transaction()
+    db.query("""DROP TABLE IF EXISTS edge_preselection""")
+    db.query("""CREATE UNLOGGED TABLE edge_preselection (
+                  id INTEGER, source INTEGER, target INTEGER, cost DOUBLE PRECISION)
+            """)
     db.query("SELECT optimize_stop_vertex_mapping()")
+    db.query("DROP TABLE edge_preselection;")
     transaction.commit()
 
 

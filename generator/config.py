@@ -5,7 +5,7 @@ import jsonschema
 
 DEFAULT_CONFIG = """
 database-connections:
-    public-transport-stops: "postgres://test:test@localhost:5432/oevgk18"
+    public-transport-stops: "postgres://test:xkGVsHsTHnkW9wpD@localhost:5432/oevgk18"
     
 isochrones:
     max-relevant-distance: 1280 # 900s * 1.4m/s = 1280m
