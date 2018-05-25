@@ -15,15 +15,6 @@ isochrones:
 output:
     output-directory: "results/"
     metadata-filename: "oevgk18_metadata.json"
-    styling:
-        opacity: 0.6
-        colors:
-            A: "#700038" # color of transport stop rating A
-            B: "#BC42FF"
-            C: "#9966FF"
-            D: "#00B000"
-            E: "#B3FF40"
-            F: "#DEF325"
 due-dates:
     - type-of-day: "Werktag"
       type-of-interval: "Tag"
@@ -205,27 +196,9 @@ SCHEMA = {
                 "metadata-filename": {
                     "type": "string"
                 },
-                "styling": {
-                    "type": "object",
-                    "properties": {
-                        "opacity": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 1.0
-                        },
-                        "colors": {
-                            "properties": {},
-                            "additionalProperties": {
-                                "$ref": "#/definitions/color"
-                            }
-                        }
-                    },
-                    "additionalProperties": False,
-                    "requiredProperties": ["opacity", "colors"]
-                }
             },
             "additionalProperties": False,
-            "requiredProperties": ["output-directory", "styling"]
+            "requiredProperties": ["output-directory"]
         },
         "due-dates": {
             "$id": "/properties/due-dates",
