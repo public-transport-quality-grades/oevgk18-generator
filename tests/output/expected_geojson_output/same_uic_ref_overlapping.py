@@ -1,12 +1,4 @@
 result = {
-    "colors": {
-        "A": "#700038",
-        "B": "#BC42FF",
-        "C": "#9966FF",
-        "D": "#00B000",
-        "E": "#B3FF40",
-        "F": "#DEF325"
-    },
     "due-date": "2018-11-13T00:00:00",
     "features": [
         {
@@ -50,8 +42,6 @@ result = {
                 "type": "Polygon"
             },
             "properties": {
-                "fill": "#BC42FF",
-                "fill-opacity": 0.6,
                 "grade": "B",
                 "uic_ref": 1
             },
@@ -94,8 +84,6 @@ result = {
                 "type": "Polygon"
             },
             "properties": {
-                "fill": "#700038",
-                "fill-opacity": 0.6,
                 "grade": "A",
                 "uic_ref": 1
             },
