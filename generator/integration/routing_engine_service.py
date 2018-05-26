@@ -20,7 +20,7 @@ def db_connection(db_config: dict):
 
 
 def mark_relevant_roads(db: Database, max_relevant_distance: float):
-    logger.info(f"Mark nodes that are reachable in {max_relevant_distance} kilometres")
+    logger.info(f"Mark nodes that are reachable in {max_relevant_distance} metres")
     transaction = db.transaction()
     db.query("""SELECT mark_relevant_ways(:max_relevant_distance);""", max_relevant_distance=max_relevant_distance)
     transaction.commit()

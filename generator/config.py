@@ -9,7 +9,7 @@ database-connections:
     
 isochrones:
     max-relevant-distance: 1280 # 900s * 1.4m/s = 1280m
-    edge-segment-length: 10 # segment size in meters with which the graph will be split up. The lower, the more accurate
+    edge-segment-length: 30 # segment size in meters with which the graph will be split up. The lower, the more accurate
     walking-speed: 1.4 # m/s
 
 output:
