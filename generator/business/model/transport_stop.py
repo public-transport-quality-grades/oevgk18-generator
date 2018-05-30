@@ -12,7 +12,7 @@ class TransportStop:
         self.location: Point = location
         self.route_types: List[RouteType] = [RouteType(route_type) for route_type in route_types]
 
-    def is_railway_line(self) -> bool:
+    def is_railway_station(self) -> bool:
         return any(route_type == RouteType.SUBWAY or route_type == RouteType.RAIL for route_type in self.route_types)
 
     def __repr__(self):
