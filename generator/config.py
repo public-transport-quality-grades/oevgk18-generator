@@ -15,6 +15,7 @@ isochrones:
 output:
     output-directory: "results/"
     metadata-filename: "oevgk18_metadata.json"
+    transport-stops-filename: "transport_stops.geojson"
 due-dates:
     - type-of-day: "Werktag"
       type-of-interval: "Tag"
@@ -196,9 +197,12 @@ SCHEMA = {
                 "metadata-filename": {
                     "type": "string"
                 },
+                "transport-stops-filename": {
+                    "type": "string"
+                }
             },
             "additionalProperties": False,
-            "requiredProperties": ["output-directory"]
+            "requiredProperties": ["output-directory", "metadata-filename", "transport-stops-filename"]
         },
         "due-dates": {
             "$id": "/properties/due-dates",
