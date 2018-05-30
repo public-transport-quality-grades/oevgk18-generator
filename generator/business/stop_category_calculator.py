@@ -37,7 +37,6 @@ def _calculate_stop_category(uic_ref: int, category_configs, transport_group: Pu
         if transport_group.value in mapping:
             stop_category = StopCategory(mapping[transport_group.value])
             logger.debug(f"{uic_ref}: {stop_category}, interval {interval}, group: {transport_group}")
-            print(f"{uic_ref}: {stop_category}, interval {interval}, group: {transport_group}")
             return StopCategory(mapping[transport_group.value])
 
     return None

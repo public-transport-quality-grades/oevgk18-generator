@@ -20,7 +20,7 @@ def db_connection(db_config: dict):
 
 
 def mark_relevant_roads(db: Database, max_relevant_distance: float):
-    logger.info(f"Mark nodes that are reachable in {max_relevant_distance} kilometres")
+    logger.info(f"Mark nodes that are reachable in {max_relevant_distance} metres")
     transaction = db.transaction()
     db.query("""SELECT mark_relevant_ways(:max_relevant_distance);""", max_relevant_distance=max_relevant_distance)
     transaction.commit()
@@ -66,7 +66,12 @@ def _update_segmented_routing_costs(db_config):
 def optimize_stop_vertex_mapping(db: Database):
     logger.info("Locate public transport stops on the routing graph")
     transaction = db.transaction()
+    db.query("""DROP TABLE IF EXISTS edge_preselection""")
+    db.query("""CREATE UNLOGGED TABLE edge_preselection (
+                  id INTEGER, source INTEGER, target INTEGER, cost DOUBLE PRECISION)
+            """)
     db.query("SELECT optimize_stop_vertex_mapping()")
+    db.query("DROP TABLE edge_preselection;")
     transaction.commit()
 
 
