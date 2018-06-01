@@ -6,6 +6,7 @@ RUN /bin/bash -c 'rm /docker-entrypoint-initdb.d/routing.sh'
 COPY ./schema/* /docker-entrypoint-initdb.d/
 COPY ./function/* /docker-entrypoint-initdb.d/
 COPY ./post-import-sql/ /post-import-sql/
+COPY ./intercity_railway_stations.csv /post-import-sql/
 
 COPY ./scripts /scripts
 
