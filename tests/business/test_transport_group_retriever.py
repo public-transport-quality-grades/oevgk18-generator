@@ -8,7 +8,8 @@ def test_calculate_transport_groups():
         8503400: PublicTransportGroup.A,
         8503125: PublicTransportGroup.B,
         8591382: PublicTransportGroup.C,
-        8593245: PublicTransportGroup.A
+        8593245: PublicTransportGroup.A,
+        8504532: PublicTransportGroup.A
     }
 
     registry = mock_registry.get_registry(mock_timetable_service, mock_transport_stop_service)

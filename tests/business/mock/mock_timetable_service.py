@@ -3,11 +3,12 @@ from typing import Dict, List
 from datetime import datetime
 
 
-mocked_return_values = {
+mocked_directions_count = {
     8503400: 9,
     8503125: 5,
     8591382: 0,
-    8593245: 6
+    8593245: 6,
+    8504532: 4
 }
 
 
@@ -37,7 +38,7 @@ def db_connection(db_config: dict):
 
 
 def get_count_of_distinct_next_stops(db_config, relevant_stops) -> Dict[int, int]:
-    return mocked_return_values
+    return mocked_directions_count
 
 
 def get_all_departure_times(db_config: dict, due_date: datetime) -> Dict[int, List[datetime]]:
