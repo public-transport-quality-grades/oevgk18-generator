@@ -36,13 +36,12 @@ def get_transport_groups(registry) -> TransportGroups:
 def _get_transport_group(transport_stop: TransportStop,
                          direction_count: int = 0, min_junction_directions: int = 0) -> PublicTransportGroup:
     if transport_stop.is_railway_station():
-        logger.debug(f"{transport_stop.uic_ref}: Railway station with {direction_count} directions")
-        if _is_railway_junction(direction_count, min_junction_directions):
+        if _is_railway_junction(transport_stop, direction_count, min_junction_directions):
             return PublicTransportGroup.A
         else:
             return PublicTransportGroup.B
     return PublicTransportGroup.C
 
 
-def _is_railway_junction(railway_direction_count: int, min_directions: int) -> bool:
-    return railway_direction_count >= min_directions
+def _is_railway_junction(transport_stop: TransportStop, railway_direction_count: int, min_directions: int) -> bool:
+    return transport_stop.is_intercity_station or railway_direction_count >= min_directions
