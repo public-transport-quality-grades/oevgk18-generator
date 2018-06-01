@@ -1,10 +1,12 @@
-from typing import List, Dict
+from typing import List
 import logging
 from os import path, makedirs
 from itertools import chain
 import geojson
 from shapely.geometry.base import BaseGeometry
 from geojson import FeatureCollection, Feature
+
+from ..types import TransportStopGradings
 from ..business.model.grading import Grading
 from ..business.model.stop_grade import StopGrade
 from ..business.model.transport_stop import TransportStop
@@ -12,8 +14,6 @@ from .util import round_geometry, filename_parser
 
 
 logger = logging.getLogger(__name__)
-
-TransportStopGradings = Dict[int, List[Grading]]
 
 
 def write_gradings(output_config: dict, due_date_config: dict, stop_gradings: TransportStopGradings):

@@ -1,14 +1,11 @@
-from typing import List, Dict, Optional
+from typing import List, Optional
 import logging
+from ..types import TransportGroups, TransportStopCategories, Intervals
 from .model.public_transport_group import PublicTransportGroup
 from .model.stop_category import StopCategory
 from . import stop_interval_calculator
 
 logger = logging.getLogger(__name__)
-
-TransportGroups = Dict[int, PublicTransportGroup]
-Intervals = Dict[int, Optional[float]]
-TransportStopCategories = Dict[int, StopCategory]
 
 
 def get_stop_categories(

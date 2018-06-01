@@ -6,8 +6,8 @@ result = {
       "geometry": {
         "type": "Point",
         "coordinates": [
-          47.411496,
-          8.544790
+          8.544790,
+          47.411496
         ]
       },
       "properties": {
@@ -20,8 +20,8 @@ result = {
       "geometry": {
         "type": "Point",
         "coordinates": [
-          47.410070,
-          8.546231
+          8.546231,
+          47.410070
         ]
       },
       "properties": {

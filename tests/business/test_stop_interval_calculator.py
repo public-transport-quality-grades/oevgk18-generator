@@ -1,6 +1,6 @@
 from datetime import datetime
 from ..context import generator
-from .mock import mock_timetable_service, mock_registry
+from .mock import mock_timetable_service, mock_registry, mock_transport_stops
 
 
 def test_calculate_stop_intervals_trivial():
@@ -8,7 +8,7 @@ def test_calculate_stop_intervals_trivial():
     registry = mock_registry.get_registry(mock_timetable_service)
 
     stops = [
-        8503400
+        mock_transport_stops.stop_8503400
     ]
 
     due_date_config = {
@@ -18,7 +18,7 @@ def test_calculate_stop_intervals_trivial():
     }
 
     expected_interval = {
-        8503400: 2600
+        mock_transport_stops.stop_8503400: 2600
     }
 
     result = generator.business.stop_interval_calculator.calculate_stop_intervals(
@@ -32,7 +32,7 @@ def test_calculate_stop_intervals_regular():
     registry = mock_registry.get_registry(mock_timetable_service)
 
     stops = [
-        8503125
+        mock_transport_stops.stop_8503125
     ]
 
     due_date_config = {
@@ -42,7 +42,7 @@ def test_calculate_stop_intervals_regular():
     }
 
     expected_interval = {
-        8503125: 890.625  # 14 min 50s
+        mock_transport_stops.stop_8503125: 890.625  # 14 min 50s
     }
 
     result = generator.business.stop_interval_calculator.calculate_stop_intervals(
@@ -55,7 +55,7 @@ def test_calculate_stop_intervals_skewed():
     registry = mock_registry.get_registry(mock_timetable_service)
 
     stops = [
-        8591382
+        mock_transport_stops.stop_8591382
     ]
 
     due_date_config = {
@@ -65,7 +65,7 @@ def test_calculate_stop_intervals_skewed():
     }
 
     expected_interval = {
-        8591382: 3481.5  # 58.01 min
+        mock_transport_stops.stop_8591382: 3481.5  # 58.01 min
     }
 
     result = generator.business.stop_interval_calculator.calculate_stop_intervals(
