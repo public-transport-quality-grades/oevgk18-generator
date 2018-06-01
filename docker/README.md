@@ -30,6 +30,8 @@ docker-compose run db import-gtfs-data.sh
 
 Make sure that the OSM file is placed under `docker/tooling/osm-data` and adjust the path in the command.
 
+If no file is specified, data for Switzerland will be downloaded automatically.
+
 ``` bash
 docker-compose run tooling generate-osm-data.sh /osm-data/<osm-filename>
 docker-compose run db import-osm-data.sh
