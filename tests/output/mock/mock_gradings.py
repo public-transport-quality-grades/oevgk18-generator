@@ -1,4 +1,3 @@
-import datetime
 from typing import List
 from shapely.geometry import Polygon
 
@@ -326,28 +325,3 @@ def _create_isochrone(points: List[List[float]], distance: int) -> Isochrone:
 def _create_diff_of_gradings(a: Grading, b: Grading) -> Grading:
     diff = a.isochrone.polygon.difference(b.isochrone.polygon)
     return Grading(Isochrone(a.isochrone.distance, diff), a.grade)
-
-
-def mock_output_config() -> dict:
-    return {
-        'output-directory': 'results/',
-        'styling': {'opacity': 0.6,
-                    'colors': {'A': '#700038',
-                               'B': '#BC42FF',
-                               'C': '#9966FF',
-                               'D': '#00B000',
-                               'E': '#B3FF40',
-                               'F': '#DEF325'
-                               }
-                    }
-    }
-
-
-def mock_due_date_config() -> dict:
-    return {
-        'type-of-day': 'Working Day',
-        'type-of-interval': 'Day',
-        'due-date': datetime.datetime(2018, 11, 13, 0, 0),
-        'lower-bound': '06:00',
-        'upper-bound': '20:00'
-    }

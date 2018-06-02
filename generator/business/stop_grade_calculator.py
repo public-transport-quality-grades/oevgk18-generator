@@ -1,16 +1,13 @@
 from typing import Dict, List, Optional
 import logging
+
+from ..types import TransportStopCategories, TransportStopGradings, DistanceGradeMapping
 from .model.stop_category import StopCategory
 from .model.stop_grade import StopGrade
 from .model.isochrone import Isochrone
 from .model.grading import Grading
 from . import isochrone_retriever
 
-
-TransportStopCategories = Dict[int, StopCategory]
-Isochrones = Dict[int, List[Isochrone]]
-DistanceGradeMapping = Dict[float, StopGrade]
-TransportStopGradings = Dict[int, List[Grading]]
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +18,8 @@ def calculate_stop_grades(
     db_config = registry['config']['database-connections']
 
     with routing_engine_service.db_connection(db_config) as db:
-        transport_stop_gradings = {uic_ref: _calculate_grades_for_stop(registry, db, uic_ref, stop_rating)
-                                   for uic_ref, stop_rating in transport_ratings.items()
+        transport_stop_gradings = {stop_uic_ref: _calculate_grades_for_stop(registry, db, stop_uic_ref, stop_rating)
+                                   for stop_uic_ref, stop_rating in transport_ratings.items()
                                    if stop_rating is not None}
         return {uic_ref: gradings
                 for uic_ref, gradings in transport_stop_gradings.items()

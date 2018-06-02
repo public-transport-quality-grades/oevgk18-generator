@@ -1,14 +1,11 @@
-from typing import List, Dict, Optional
+from typing import List, Optional
 import logging
+from ..types import TransportGroups, TransportStopCategories, Intervals
 from .model.public_transport_group import PublicTransportGroup
 from .model.stop_category import StopCategory
 from . import stop_interval_calculator
 
 logger = logging.getLogger(__name__)
-
-TransportGroups = Dict[int, PublicTransportGroup]
-Intervals = Dict[int, Optional[float]]
-TransportStopCategories = Dict[int, StopCategory]
 
 
 def get_stop_categories(
@@ -24,9 +21,9 @@ def _calculate_stop_categories(
         registry, transport_groups: TransportGroups, intervals: Intervals) -> TransportStopCategories:
     """Calculate the transport stop category (I - VII) of all transport stops"""
     category_config = registry['config']['transport-stop-categories']
-    return {stop_uic_ref: _calculate_stop_category(
-        stop_uic_ref, category_config, transport_groups[stop_uic_ref], intervals[stop_uic_ref])
-        for stop_uic_ref in [*transport_groups]}
+    return {stop.uic_ref:
+            _calculate_stop_category(stop.uic_ref, category_config, transport_group, intervals[stop.uic_ref])
+            for stop, transport_group in transport_groups.items()}
 
 
 def _calculate_stop_category(uic_ref: int, category_configs, transport_group: PublicTransportGroup,

@@ -1,12 +1,12 @@
-from typing import List, Dict
+from typing import List
+
+from ..types import DistanceGradeMapping
 from .model.isochrone import Isochrone
 from .model.stop_category import StopCategory
 from .model.stop_grade import StopGrade
 
-DistanceGradeMapping = Dict[float, StopGrade]
 
-
-def prepare_routing_table(registry):
+def prepare_routing_table(registry: dict):
     routing_engine_service = registry['routing_engine_service']
     config = registry["config"]
     db_config = config['database-connections']

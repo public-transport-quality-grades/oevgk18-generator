@@ -28,7 +28,6 @@ def test_get_stop_categories(monkeypatch):
 
     transport_groups = mock_transport_group_retriever.get_transport_groups(registry)
 
-    stop_categories = stop_category_calculator.get_stop_categories(
-        registry, due_date_config, transport_groups)
+    stop_categories = stop_category_calculator.get_stop_categories(registry, due_date_config, transport_groups)
     assert len(stop_categories) == len(expected_stop_categories)
     assert stop_categories == expected_stop_categories

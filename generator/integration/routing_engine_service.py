@@ -4,6 +4,7 @@ from contextlib import contextmanager
 from records import Database, Record
 from typing import List, Optional, Iterable
 from concurrent.futures import ThreadPoolExecutor
+
 from .util import geometry_parser
 from ..business.model.isochrone import Isochrone
 
