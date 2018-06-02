@@ -21,7 +21,7 @@ def calculate_stop_intervals(
 
     all_departure_times: Dict = timetable_service.get_all_departure_times(db_config, due_date)
 
-    return {stop: _get_stop_interval(stop.uic_ref, all_departure_times, start_time, end_time)
+    return {stop.uic_ref: _get_stop_interval(stop.uic_ref, all_departure_times, start_time, end_time)
             for stop in stops}
 
 

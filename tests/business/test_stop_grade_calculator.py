@@ -2,6 +2,7 @@ from ..context import generator
 from generator.business.model.stop_category import StopCategory
 from generator.business.model.stop_grade import StopGrade
 from generator.business.model.grading import Grading
+from .mock import mock_registry
 from .mock import mock_routing_engine_service
 from .mock.mock_isochrone import fake_isochrone
 
@@ -23,53 +24,9 @@ def test_calculate_stop_grades():
     }
 
     gradings = generator.business.stop_grade_calculator.calculate_stop_grades(
-        _mock_registry(), TRANSPORT_STOP_RATINGS)
+        mock_registry.get_registry(routing_engine_service=mock_routing_engine_service), TRANSPORT_STOP_RATINGS)
 
     assert gradings == expected_gradings
 
 
-def _mock_registry():
-    return {
-        'routing_engine_service': mock_routing_engine_service,
-        'config': {
-            'database-connections': {},
-            'isochrones': {
-                'walking-speed': 1.5
-            },
-            "public-transport-ratings": [
-                {
-                    "max-seconds": 300,
-                    "transport-stop-categories": [
-                        {
-                            1: "A"
-                        },
-                        {
-                            2: "B"
-                        },
-                        {
-                            3: "C"
-                        }
-                    ]
-                },
-                {
-                    "max-seconds": 600,
-                    "transport-stop-categories": [
-                        {
-                            1: "D"
-                        },
-                        {
-                            2: "E"
-                        },
-                    ]
-                },
-                {
-                    "max-seconds": 900,
-                    "transport-stop-categories": [
-                        {
-                            1: "F"
-                        },
-                    ]
-                }
-            ]
-        }
-    }
+

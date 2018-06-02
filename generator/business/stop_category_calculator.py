@@ -21,9 +21,9 @@ def _calculate_stop_categories(
         registry, transport_groups: TransportGroups, intervals: Intervals) -> TransportStopCategories:
     """Calculate the transport stop category (I - VII) of all transport stops"""
     category_config = registry['config']['transport-stop-categories']
-    return {stop_uic_ref: _calculate_stop_category(
-        stop_uic_ref, category_config, transport_groups[stop_uic_ref], intervals[stop_uic_ref])
-        for stop_uic_ref in [*transport_groups]}
+    return {stop.uic_ref:
+            _calculate_stop_category(stop.uic_ref, category_config, transport_group, intervals[stop.uic_ref])
+            for stop, transport_group in transport_groups.items()}
 
 
 def _calculate_stop_category(uic_ref: int, category_configs, transport_group: PublicTransportGroup,

@@ -1,10 +1,12 @@
+from . import mock_transport_stops
+
 from generator.business.model.public_transport_group import PublicTransportGroup
 
 
 def get_transport_groups(registry):
     return {
-        8503400: PublicTransportGroup.A,
-        8503125: PublicTransportGroup.B,
-        8591382: PublicTransportGroup.C,
-        8593245: PublicTransportGroup.A
+        mock_transport_stops.stop_8503400: PublicTransportGroup.A,
+        mock_transport_stops.stop_8503125: PublicTransportGroup.B,
+        mock_transport_stops.stop_8591382: PublicTransportGroup.C,
+        mock_transport_stops.stop_8593245: PublicTransportGroup.A
     }

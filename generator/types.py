@@ -12,5 +12,5 @@ TransportStopCategories = Dict[int, StopCategory]
 TransportStopGradings = Dict[int, List[Grading]]
 
 DistanceGradeMapping = Dict[float, StopGrade]
-Intervals = Dict[TransportStop, Optional[float]]
+Intervals = Dict[int, Optional[float]]
 Isochrones = Dict[int, List[Isochrone]]

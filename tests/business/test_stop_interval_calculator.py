@@ -18,7 +18,7 @@ def test_calculate_stop_intervals_trivial():
     }
 
     expected_interval = {
-        mock_transport_stops.stop_8503400: 2600
+        mock_transport_stops.stop_8503400.uic_ref: 2600
     }
 
     result = generator.business.stop_interval_calculator.calculate_stop_intervals(
@@ -42,7 +42,7 @@ def test_calculate_stop_intervals_regular():
     }
 
     expected_interval = {
-        mock_transport_stops.stop_8503125: 890.625  # 14 min 50s
+        mock_transport_stops.stop_8503125.uic_ref: 890.625  # 14 min 50s
     }
 
     result = generator.business.stop_interval_calculator.calculate_stop_intervals(
@@ -65,7 +65,7 @@ def test_calculate_stop_intervals_skewed():
     }
 
     expected_interval = {
-        mock_transport_stops.stop_8591382: 3481.5  # 58.01 min
+        mock_transport_stops.stop_8591382.uic_ref: 3481.5  # 58.01 min
     }
 
     result = generator.business.stop_interval_calculator.calculate_stop_intervals(

@@ -18,8 +18,8 @@ def calculate_stop_grades(
     db_config = registry['config']['database-connections']
 
     with routing_engine_service.db_connection(db_config) as db:
-        transport_stop_gradings = {stop.uic_ref: _calculate_grades_for_stop(registry, db, stop.uic_ref, stop_rating)
-                                   for stop, stop_rating in transport_ratings.items()
+        transport_stop_gradings = {stop_uic_ref: _calculate_grades_for_stop(registry, db, stop_uic_ref, stop_rating)
+                                   for stop_uic_ref, stop_rating in transport_ratings.items()
                                    if stop_rating is not None}
         return {uic_ref: gradings
                 for uic_ref, gradings in transport_stop_gradings.items()
