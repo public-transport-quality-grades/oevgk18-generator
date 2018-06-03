@@ -50,8 +50,10 @@ def _recreate_routing_topology(db_config):
         logger.debug(f"Create routing topolgy for IDs {counter_min} to {counter_max}")
         with db_connection(db_config) as db:
             transaction = db.transaction()
-            db.query("""SELECT pgr_createTopology('routing_segmented', 0.00001, 'geom_way', 'id', clean:= FALSE,
-                        rows_where:='id >= :min AND id < :max')""", min=counter_min, max=counter_max)
+            db.query("""SELECT pgr_createTopology(
+                        'routing_segmented', 0.00001, 'geom_way', 'id', clean:= FALSE,
+                        rows_where:='id >= :min AND id < :max')""",
+                     min=counter_min, max=counter_max)
             transaction.commit()
         counter_min = counter_max
 
@@ -60,7 +62,7 @@ def _update_segmented_routing_costs(db_config):
     with db_connection(db_config) as db:
         transaction = db.transaction()
         db.query("""UPDATE routing_segmented SET
-          cost = ST_LengthSpheroid(geom_way, 'SPHEROID["WGS84",6378137,298.25728]')""")
+                      cost = ST_LengthSpheroid(geom_way, 'SPHEROID["WGS84",6378137,298.25728]')""")
         transaction.commit()
 
 
@@ -69,8 +71,11 @@ def optimize_stop_vertex_mapping(db: Database):
     transaction = db.transaction()
     db.query("""DROP TABLE IF EXISTS edge_preselection""")
     db.query("""CREATE UNLOGGED TABLE edge_preselection (
-                  id INTEGER, source INTEGER, target INTEGER, cost DOUBLE PRECISION)
-            """)
+                  id INTEGER,
+                  source INTEGER,
+                  target INTEGER,
+                  cost DOUBLE PRECISION
+                )""")
     db.query("SELECT optimize_stop_vertex_mapping()")
     db.query("DROP TABLE edge_preselection;")
     transaction.commit()
@@ -120,7 +125,7 @@ def calc_isochrones(db: Database, uic_ref: int, boundaries: List[int]) -> List[I
     if not nearest_vertex_id:
         return list()
     transaction = db.transaction()
-    rows = db.query("""SELECT * FROM isochrones(:node_id, :boundaries)""",
+    rows = db.query("""SELECT distance, polygon FROM isochrones(:node_id, :boundaries)""",
                     node_id=nearest_vertex_id,
                     boundaries=boundaries
                     ).all()
@@ -132,7 +137,8 @@ def calc_isochrones(db: Database, uic_ref: int, boundaries: List[int]) -> List[I
 def _retrieve_nearest_vertex(db: Database, uic_ref: int) -> Optional[int]:
     transaction = db.transaction()
     row = db.query("""SELECT nearest_vertex_id FROM stop_vertex_mapping
-                       WHERE stop_uic_ref = :uic_ref;""", uic_ref=uic_ref).first()
+                        WHERE stop_uic_ref = :uic_ref;""",
+                   uic_ref=uic_ref).first()
     transaction.commit()
     if row:
         return row['nearest_vertex_id']

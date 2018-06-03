@@ -1,1 +1,4 @@
-CREATE TABLE swissalti3d ("rid" serial PRIMARY KEY,"rast" raster);
+CREATE TABLE terrain_model (
+  "rid"  serial PRIMARY KEY,
+  "rast" raster
+);
