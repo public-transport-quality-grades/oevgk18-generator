@@ -23,7 +23,7 @@ BEGIN
       SELECT
         uic_ref,
         vertex_id
-      from neighbour
+      FROM neighbour
       WHERE vertex_id IS NOT NULL;
 END;
 $$

@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION get_nearest_neighbour_segmented(stop_lon DOUBLE PRECISION, stop_lat double precision)
+CREATE OR REPLACE FUNCTION get_nearest_neighbour_segmented(stop_lon DOUBLE PRECISION, stop_lat DOUBLE PRECISION)
   RETURNS BIGINT AS $$
 DECLARE
   nearest_vertex   BIGINT;

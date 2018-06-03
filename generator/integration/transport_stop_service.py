@@ -29,7 +29,7 @@ def _query_transport_stop_rows(db: Database):
                           s.stop_lon,
                           array_agg(r.route_type)
                           OVER (PARTITION BY s.uic_ref) AS route_types,
-                          (s.uic_ref IN (SELECT uic_ref FROM intercity_stations)) as is_intercity_station
+                          (s.uic_ref IN (SELECT uic_ref FROM intercity_stations)) AS is_intercity_station
                         FROM stops s
                           INNER JOIN stop_times st ON s.stop_id = st.stop_id
                           INNER JOIN trips t ON st.trip_id = t.trip_id

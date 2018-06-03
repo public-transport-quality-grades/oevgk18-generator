@@ -16,7 +16,7 @@ def db_connection(db_config: dict):
 
 def get_count_of_distinct_next_stops(db: Database, relevant_stops: List[str]) -> Dict[int, int]:
     rows = db.query("""WITH relevant_stops AS (
-                            SELECT unnest(:relevant_stops) as uic_ref
+                            SELECT unnest(:relevant_stops) AS uic_ref
                         ),
                         next_station_mapping AS (
                             SELECT DISTINCT
