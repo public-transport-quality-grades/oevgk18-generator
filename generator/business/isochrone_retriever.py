@@ -6,7 +6,7 @@ from .model.stop_category import StopCategory
 from .model.stop_grade import StopGrade
 
 
-def prepare_routing_table(registry: dict):
+def prepare_routing_table(registry: dict) -> None:
     routing_engine_service = registry['routing_engine_service']
     config = registry["config"]
     db_config = config['database-connections']

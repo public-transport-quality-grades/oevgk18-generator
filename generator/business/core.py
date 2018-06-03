@@ -1,7 +1,7 @@
 import logging
 
 from ..types import TransportGroups, TransportStopCategories, TransportStopGradings
-from . import stop_category_calculator, isochrone_retriever, transport_group_retriever, stop_grade_calculator
+from . import stop_category_calculator, transport_group_retriever, stop_grade_calculator
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +10,7 @@ def calculate_quality_grades(registry: dict, params):
     cli = registry['ui']
     cli.parse_params(params)
 
-    isochrone_retriever.prepare_routing_table(registry)
+    stop_grade_calculator.prepare_calculation(registry)
     transport_groups: TransportGroups = transport_group_retriever.get_transport_groups(registry)
 
     output_writer = registry['output_writer']
