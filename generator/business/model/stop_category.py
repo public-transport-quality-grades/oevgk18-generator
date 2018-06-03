@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class StopCategory(Enum):
+    # noinspection PyPep8
     I = 1
     II = 2
     III = 3

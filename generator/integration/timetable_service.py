@@ -1,7 +1,8 @@
-from datetime import datetime
 import logging
-from typing import List, Dict
 from contextlib import contextmanager
+from datetime import datetime
+from typing import List, Dict
+
 from records import Database
 
 logger = logging.getLogger(__name__)

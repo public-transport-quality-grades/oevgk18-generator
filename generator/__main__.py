@@ -1,8 +1,9 @@
 import sys
+
 from generator.business import core
-from generator.ui import cli
 from generator.integration import routing_engine_service, timetable_service, transport_stop_service
 from generator.output import geojson_writer, metadata_writer
+from generator.ui import cli
 
 
 def wire() -> dict:

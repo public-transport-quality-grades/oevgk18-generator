@@ -1,9 +1,11 @@
 import logging
 import os
-from contextlib import contextmanager
-from records import Database, Record
-from typing import List, Optional, Iterable
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
+from typing import List, Optional, Iterable
+
+from records import Database, Record
+from sqlalchemy.exc import SQLAlchemyError
 
 from .util import geometry_parser
 from ..business.model.isochrone import Isochrone
@@ -99,8 +101,8 @@ def _execute_calc_effective_kilometres(db_config, start_id: int, end_id: int) ->
         transaction = db.transaction()
         try:
             db.query("SELECT calc_effective_kilometres(:start_id, :end_id);", start_id=start_id, end_id=end_id)
-        except Exception as ex:
-            logger.debug("Error in calc_effective_kilometres")
+        except SQLAlchemyError as ex:
+            logger.debug(f"Error in calc_effective_kilometres: {ex}")
         transaction.commit()
 
 

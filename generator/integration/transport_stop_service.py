@@ -1,6 +1,7 @@
 import logging
-from typing import List
 from contextlib import contextmanager
+from typing import List
+
 from records import Database, Record
 from shapely.geometry import Point
 

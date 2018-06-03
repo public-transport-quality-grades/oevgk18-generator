@@ -1,6 +1,6 @@
-from ..context import generator
 from generator.business.model.public_transport_group import PublicTransportGroup
 from .mock import mock_timetable_service, mock_transport_stop_service, mock_transport_stops, mock_registry
+from ..context import generator
 
 
 def test_calculate_transport_groups():

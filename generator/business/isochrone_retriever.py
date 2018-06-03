@@ -1,9 +1,9 @@
 from typing import List
 
-from ..types import DistanceGradeMapping
 from .model.isochrone import Isochrone
 from .model.stop_category import StopCategory
 from .model.stop_grade import StopGrade
+from ..types import DistanceGradeMapping
 
 
 def prepare_routing_table(registry: dict) -> None:

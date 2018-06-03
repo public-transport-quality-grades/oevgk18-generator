@@ -1,6 +1,5 @@
-from . import mock_transport_stops
-
 from generator.business.model.public_transport_group import PublicTransportGroup
+from . import mock_transport_stops
 
 
 def get_transport_groups(registry):

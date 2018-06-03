@@ -1,5 +1,6 @@
-from shapely.geometry import Polygon, shape, mapping
 import logging
+
+from shapely.geometry import Polygon, shape, mapping
 
 PRECISION = 5
 

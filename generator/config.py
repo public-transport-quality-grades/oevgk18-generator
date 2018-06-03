@@ -1,8 +1,9 @@
-from os import path
 from datetime import datetime
+from os import path
 from shutil import copyfile
-import ruamel.yaml
+
 import jsonschema
+import ruamel.yaml
 
 SAMPLE_CONFIG_PATH = 'sample_config.yml'
 
@@ -64,7 +65,7 @@ SCHEMA = {
             "additionalProperties": False,
             "required": ["max-relevant-distance", "edge-segment-length", "walking-speed"]
         },
-        "output":  {
+        "output": {
             "$id": "/properties/isochrones",
             "type": "object",
             "properties": {
@@ -146,7 +147,8 @@ SCHEMA = {
                         "$id": "/properties/transport-stop-categories/items/properties/transport-type-mappings",
                         "type": "array",
                         "items": {
-                            "$id": "/properties/transport-stop-categories/items/properties/transport-type-mappings/items",
+                            "$id": "/properties/transport-stop-categories/items/properties/"
+                                   "transport-type-mappings/items",
                             "type": "object",
                             "properties": {
                                 "A": {
@@ -183,7 +185,8 @@ SCHEMA = {
                         "$id": "/properties/public-transport-ratings/items/properties/transport-stop-categories",
                         "type": "array",
                         "items": {
-                            "$id": "/properties/public-transport-ratings/items/properties/transport-stop-categories/items",
+                            "$id": "/properties/public-transport-ratings/items/properties/"
+                                   "transport-stop-categories/items",
                             "type": "object",
                             "properties": {
                                 1: {

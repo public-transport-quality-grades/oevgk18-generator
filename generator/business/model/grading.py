@@ -1,5 +1,5 @@
-from .isochrone import Isochrone
 from generator.business.model.stop_grade import StopGrade
+from .isochrone import Isochrone
 
 
 class Grading:

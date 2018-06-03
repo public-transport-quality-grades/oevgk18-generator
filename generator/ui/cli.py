@@ -1,7 +1,8 @@
-from typing import Tuple
-import sys
-import logging
 import argparse
+import logging
+import sys
+from typing import Tuple
+
 from .. import config
 
 logger = logging.getLogger('generator')
@@ -29,7 +30,7 @@ def _setup_logging(verbose) -> None:
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter(
-            '[%(levelname)-7s] - %(message)s')
+        '[%(levelname)-7s] - %(message)s')
     if verbose:
         logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter(

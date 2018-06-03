@@ -1,10 +1,8 @@
-import pytest
-
-from .mock import mock_config, mock_gradings, mock_transport_stops
 from generator.output import geojson_writer
-from .expected_geojson_output import nonintercepting, intercepting_same_grade, same_uic_ref_overlapping
 from .expected_geojson_output import different_uic_ref_overlapping, different_uic_ref_and_grades
+from .expected_geojson_output import nonintercepting, intercepting_same_grade, same_uic_ref_overlapping
 from .expected_geojson_output import transport_stops
+from .mock import mock_config, mock_gradings, mock_transport_stops
 
 
 def test_write_gradings_noninterception(monkeypatch):
