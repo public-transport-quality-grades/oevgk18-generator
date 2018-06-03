@@ -23,7 +23,7 @@ BEGIN
     SELECT
       id,
       boundary AS distance,
-      the_geom as point
+      the_geom AS point
     FROM unnest(boundaries) boundary,
         LATERAL pgr_drivingDistance(
             'SELECT id, source, target, cost FROM edge_preselection',
@@ -35,7 +35,7 @@ BEGIN
   );
 
   RETURN QUERY
-  WITH relevant_bounderies as (
+  WITH relevant_bounderies AS (
       SELECT boundary
       FROM unnest(boundaries) boundary, distances d
       WHERE d.distance = boundary
@@ -44,7 +44,7 @@ BEGIN
   )
   SELECT
     boundary,
-    polygon_geom as polygon
+    polygon_geom AS polygon
   FROM relevant_bounderies,
       LATERAL st_buffer(
           pgr_pointsAsPolygon(

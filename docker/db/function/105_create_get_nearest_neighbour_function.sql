@@ -9,7 +9,7 @@ BEGIN
   FROM vertex
   ORDER BY geom_vertex <#> stop_geom
   LIMIT 1
-  into ret;
+  INTO ret;
   RETURN ret;
 END;
 $$

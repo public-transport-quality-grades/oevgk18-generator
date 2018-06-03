@@ -125,7 +125,7 @@ def calc_isochrones(db: Database, uic_ref: int, boundaries: List[int]) -> List[I
     if not nearest_vertex_id:
         return list()
     transaction = db.transaction()
-    rows = db.query("""SELECT * FROM isochrones(:node_id, :boundaries)""",
+    rows = db.query("""SELECT distance, polygon FROM isochrones(:node_id, :boundaries)""",
                     node_id=nearest_vertex_id,
                     boundaries=boundaries
                     ).all()

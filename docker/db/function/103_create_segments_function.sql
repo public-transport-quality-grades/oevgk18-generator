@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION segments(geom_way GEOMETRY, length_m DOUBLE PRECISION, segment_length INTEGER DEFAULT 100)
-  RETURNS TABLE(geom geometry) AS $$
+  RETURNS TABLE(geom GEOMETRY) AS $$
 BEGIN
   IF length_m = 0.0
   THEN
@@ -12,7 +12,7 @@ BEGIN
                               THEN segment_length * (n + 1) / length_m
                             ELSE 1
                             END
-           ) As new_geom
+           ) AS new_geom
     FROM generate_series(0, 10000) AS n
     WHERE n * segment_length / length_m < 1;
   END IF;

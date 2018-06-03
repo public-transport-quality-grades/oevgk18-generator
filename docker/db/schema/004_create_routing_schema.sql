@@ -1,35 +1,35 @@
 DROP TABLE IF EXISTS routing;
 
 CREATE TABLE routing (
-  id            integer,
-  osm_id        bigint,
+  id            INTEGER,
+  osm_id        BIGINT,
   osm_name      character varying,
   osm_meta      character varying,
-  osm_source_id bigint,
-  osm_target_id bigint,
-  clazz         integer,
-  flags         integer,
-  source        integer,
-  target        integer,
-  km            double precision,
-  kmh           integer,
-  cost          double precision,
-  reverse_cost  double precision,
-  x1            double precision,
-  y1            double precision,
-  x2            double precision,
-  y2            double precision,
-  relevant      bool
+  osm_source_id BIGINT,
+  osm_target_id BIGINT,
+  clazz         INTEGER,
+  flags         INTEGER,
+  source        INTEGER,
+  target        INTEGER,
+  km            DOUBLE PRECISION,
+  kmh           INTEGER,
+  cost          DOUBLE PRECISION,
+  reverse_cost  DOUBLE PRECISION,
+  x1            DOUBLE PRECISION,
+  y1            DOUBLE PRECISION,
+  x2            DOUBLE PRECISION,
+  y2            DOUBLE PRECISION,
+  relevant      BOOLEAN
 );
 SELECT AddGeometryColumn('routing', 'geom_way', 4326, 'LINESTRING', 2);
 
 DROP TABLE IF EXISTS routing_segmented;
 CREATE TABLE routing_segmented (
-  id             serial,
-  osm_id         integer,
-  source         integer,
-  target         integer,
-  cost           double precision,
-  cost_effective double precision
+  id             SERIAL,
+  osm_id         INTEGER,
+  source         INTEGER,
+  target         INTEGER,
+  cost           DOUBLE PRECISION,
+  cost_effective DOUBLE PRECISION
 );
 SELECT AddGeometryColumn('routing_segmented', 'geom_way', 4326, 'LINESTRING', 2);
