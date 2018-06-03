@@ -1,7 +1,7 @@
 import logging
 
-from ..types import TransportGroups, TransportStopCategories, TransportStopGradings
 from . import stop_category_calculator, transport_group_retriever, stop_grade_calculator
+from ..types import TransportGroups, TransportStopCategories, TransportStopGradings
 
 logger = logging.getLogger(__name__)
 

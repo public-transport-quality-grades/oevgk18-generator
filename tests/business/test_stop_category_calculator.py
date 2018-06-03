@@ -1,7 +1,8 @@
 from datetime import datetime
-from generator.business.model.stop_category import StopCategory
-from generator.business import stop_interval_calculator, transport_group_retriever
+
 from generator.business import stop_category_calculator
+from generator.business import stop_interval_calculator, transport_group_retriever
+from generator.business.model.stop_category import StopCategory
 from .mock import mock_timetable_service, mock_transport_group_retriever, mock_interval_calculator, mock_registry
 
 

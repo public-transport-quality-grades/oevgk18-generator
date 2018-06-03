@@ -1,13 +1,12 @@
-from typing import Dict, List, Optional
 import logging
+from typing import Dict, List, Optional
 
-from ..types import TransportStopCategories, TransportStopGradings, DistanceGradeMapping
+from . import isochrone_retriever
+from .model.grading import Grading
+from .model.isochrone import Isochrone
 from .model.stop_category import StopCategory
 from .model.stop_grade import StopGrade
-from .model.isochrone import Isochrone
-from .model.grading import Grading
-from . import isochrone_retriever
-
+from ..types import TransportStopCategories, TransportStopGradings, DistanceGradeMapping
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,6 @@ def calculate_stop_grades(
 
 def _calculate_grades_for_stop(
         registry, db, uic_ref: int, stop_rating: StopCategory) -> List[Grading]:
-
     logger.debug(f"Calculate gradings for {uic_ref}")
     config = registry['config']
     distance_grades: DistanceGradeMapping = isochrone_retriever.get_distance_grade_mapping(config, stop_rating)
@@ -46,7 +44,6 @@ def _calculate_grades_for_stop(
 
 def _map_isochrone_to_grading(
         isochrone: Isochrone, distance_grades: Dict[float, StopGrade]) -> Optional[Grading]:
-
     grade = list([grade for distance, grade in distance_grades.items() if distance == isochrone.distance])
     if grade:
         return Grading(isochrone, grade[0])

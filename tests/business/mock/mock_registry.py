@@ -1,4 +1,3 @@
-
 def get_registry(timetable_service=None, transport_stop_service=None, routing_engine_service=None):
     return {
         'timetable_service': timetable_service,

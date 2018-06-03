@@ -1,17 +1,17 @@
-from typing import List
 import logging
-from os import path, makedirs
 from itertools import chain
-import geojson
-from shapely.geometry.base import BaseGeometry
-from geojson import FeatureCollection, Feature
+from os import path, makedirs
+from typing import List
 
-from ..types import TransportStopGradings
+import geojson
+from geojson import FeatureCollection, Feature
+from shapely.geometry.base import BaseGeometry
+
+from .util import round_geometry, filename_parser
 from ..business.model.grading import Grading
 from ..business.model.stop_grade import StopGrade
 from ..business.model.transport_stop import TransportStop
-from .util import round_geometry, filename_parser
-
+from ..types import TransportStopGradings
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +79,7 @@ def _get_grading_properties(uic_ref: int, grade: StopGrade) -> dict:
     }
 
 
-def _get_transport_stop_properties(uic_name: str, uic_ref: int)-> dict:
+def _get_transport_stop_properties(uic_name: str, uic_ref: int) -> dict:
     return {
         'uic_name': uic_name,
         'uic_ref': uic_ref

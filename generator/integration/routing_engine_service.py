@@ -1,9 +1,10 @@
 import logging
 import os
-from contextlib import contextmanager
-from records import Database, Record
-from typing import List, Optional, Iterable
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
+from typing import List, Optional, Iterable
+
+from records import Database, Record
 
 from .util import geometry_parser
 from ..business.model.isochrone import Isochrone

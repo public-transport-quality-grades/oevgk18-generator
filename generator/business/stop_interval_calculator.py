@@ -1,9 +1,9 @@
-from typing import List, Dict, Optional
-from datetime import time, datetime, timedelta
 import logging
+from datetime import time, datetime, timedelta
+from typing import List, Dict, Optional
 
-from ..types import Intervals
 from ..business.model.transport_stop import TransportStop
+from ..types import Intervals
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,6 @@ def _get_stop_interval(uic_ref: int, all_departures: Dict[int, List[datetime]],
 
 def _calculate_stop_interval(stop_departures: List[datetime], start_time: datetime,
                              end_time: datetime) -> Optional[float]:
-
     departures: List[datetime] = list(filter(
         lambda t: _departure_time_inside_interval(t, start_time, end_time), stop_departures))
 

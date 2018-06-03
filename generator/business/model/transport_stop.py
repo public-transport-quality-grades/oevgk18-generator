@@ -1,4 +1,5 @@
 from typing import List
+
 from shapely.geometry import Point
 
 from .route_type import RouteType

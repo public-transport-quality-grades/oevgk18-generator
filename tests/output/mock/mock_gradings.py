@@ -1,4 +1,5 @@
 from typing import List
+
 from shapely.geometry import Polygon
 
 from generator.business.model.grading import Grading
@@ -213,7 +214,6 @@ c_6_polygon = [
         46.865267407682865
     ]
 ]
-
 
 c_7_polygon = [
     [

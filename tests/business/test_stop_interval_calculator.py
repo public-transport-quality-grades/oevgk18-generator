@@ -1,6 +1,7 @@
 from datetime import datetime
-from ..context import generator
+
 from .mock import mock_timetable_service, mock_registry, mock_transport_stops
+from ..context import generator
 
 
 def test_calculate_stop_intervals_trivial():

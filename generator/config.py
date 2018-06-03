@@ -1,8 +1,9 @@
-from os import path
 from datetime import datetime
+from os import path
 from shutil import copyfile
-import ruamel.yaml
+
 import jsonschema
+import ruamel.yaml
 
 SAMPLE_CONFIG_PATH = 'sample_config.yml'
 
@@ -64,7 +65,7 @@ SCHEMA = {
             "additionalProperties": False,
             "required": ["max-relevant-distance", "edge-segment-length", "walking-speed"]
         },
-        "output":  {
+        "output": {
             "$id": "/properties/isochrones",
             "type": "object",
             "properties": {

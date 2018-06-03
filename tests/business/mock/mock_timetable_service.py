@@ -1,7 +1,6 @@
 from contextlib import contextmanager
-from typing import Dict, List
 from datetime import datetime
-
+from typing import Dict, List
 
 mocked_directions_count = {
     8503400: 9,
@@ -10,7 +9,6 @@ mocked_directions_count = {
     8593245: 6,
     8504532: 4
 }
-
 
 mocked_departure_times = {
     8503400: [datetime(2018, 4, 23, 6, 35), datetime(2018, 4, 23, 7, 15)],

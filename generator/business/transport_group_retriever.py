@@ -1,9 +1,9 @@
-from typing import List
 import logging
+from typing import List
 
-from ..types import TransportGroups
-from .model.transport_stop import TransportStop
 from .model.public_transport_group import PublicTransportGroup
+from .model.transport_stop import TransportStop
+from ..types import TransportGroups
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +24,9 @@ def get_transport_groups(registry) -> TransportGroups:
         direction_count_stop_mapping = \
             timetable_service.get_count_of_distinct_next_stops(db, [stop.uic_ref for stop in railway_stations])
         railway_groups = {railway_station:
-                          _get_transport_group(railway_station, direction_count_stop_mapping[railway_station.uic_ref],
-                                               min_junction_directions)
+                              _get_transport_group(railway_station,
+                                                   direction_count_stop_mapping[railway_station.uic_ref],
+                                                   min_junction_directions)
                           for railway_station in railway_stations}
 
         other_groups = {stop: _get_transport_group(stop) for stop in other_stops}
