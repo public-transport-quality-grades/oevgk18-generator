@@ -1,1 +1,4 @@
-CREATE TABLE swissalti3d ("rid" serial PRIMARY KEY,"rast" raster);
+CREATE TABLE swissalti3d (
+  "rid"  serial PRIMARY KEY,
+  "rast" raster
+);
