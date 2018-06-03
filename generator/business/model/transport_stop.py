@@ -11,7 +11,7 @@ class TransportStop:
                  route_types: List[int]):
         self.uic_name: str = uic_name
         self.uic_ref: int = uic_ref
-        self.is_intercity_station: bool = is_intercity_station;
+        self.is_intercity_station: bool = is_intercity_station
         self.location: Point = location
         self.route_types: List[RouteType] = [RouteType(route_type) for route_type in route_types]
 

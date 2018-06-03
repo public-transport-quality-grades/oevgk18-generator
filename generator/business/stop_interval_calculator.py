@@ -75,6 +75,7 @@ def _parse_time(time_str: str, due_date: datetime) -> datetime:
     """parse string from format hh:mm to time"""
     hours, minutes = time_str.split(':')
     parsed_time = time(hour=int(hours), minute=int(minutes))
+    # noinspection PyTypeChecker
     parsed_date = datetime.combine(due_date, parsed_time)
     if parsed_time == time(0, 0):
         return parsed_date + timedelta(days=1)
