@@ -12,6 +12,10 @@ from . import isochrone_retriever
 logger = logging.getLogger(__name__)
 
 
+def prepare_calculation(registry: dict) -> None:
+    isochrone_retriever.prepare_routing_table(registry)
+
+
 def calculate_stop_grades(
         registry, transport_ratings: TransportStopCategories) -> TransportStopGradings:
     routing_engine_service = registry['routing_engine_service']
