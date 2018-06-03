@@ -6,9 +6,9 @@ from . import stop_category_calculator, transport_group_retriever, stop_grade_ca
 logger = logging.getLogger(__name__)
 
 
-def calculate_quality_grades(registry: dict, params):
+def calculate_quality_grades(registry: dict, params: list) -> None:
     cli = registry['ui']
-    cli.parse_params(params)
+    cli.setup_cli(params, registry)
 
     stop_grade_calculator.prepare_calculation(registry)
     transport_groups: TransportGroups = transport_group_retriever.get_transport_groups(registry)
@@ -17,6 +17,8 @@ def calculate_quality_grades(registry: dict, params):
     config = registry['config']
 
     for due_date_config in config['due-dates']:
+        logger.info(f"Calculate public transport quality grades with due date "
+                    f"{due_date_config['due-date'].strftime('%Y-%m-%d')}, {due_date_config['type-of-interval']}")
         stop_categories: TransportStopCategories = \
             stop_category_calculator.get_stop_categories(registry, due_date_config, transport_groups)
 

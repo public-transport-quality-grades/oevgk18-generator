@@ -350,7 +350,7 @@ def load_config(config_path: str) -> dict:
     """
 
     if not path.exists(config_path):
-        create_default_config(config_path)
+        _create_default_config(config_path)
 
     with open(config_path, 'r') as f:
         config = ruamel.yaml.load(f, ruamel.yaml.RoundTripLoader)
@@ -360,7 +360,7 @@ def load_config(config_path: str) -> dict:
     return _parse_dates(config)
 
 
-def create_default_config(config_path: str):
+def _create_default_config(config_path: str):
     """
     Creates the default configuration file.
     """
