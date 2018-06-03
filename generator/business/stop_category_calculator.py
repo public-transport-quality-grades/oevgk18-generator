@@ -28,7 +28,7 @@ def _calculate_stop_categories(
 
 def _calculate_stop_category(uic_ref: int, category_configs, transport_group: PublicTransportGroup,
                              interval: Optional[float]) -> Optional[StopCategory]:
-    logger.info(f"Calculating {uic_ref}")
+    logger.info(f"Calculating transport stop category for {uic_ref}")
     transport_group_mapping: List[dict] = _find_interval_range(category_configs, interval)
     for mapping in transport_group_mapping:
         if transport_group.value in mapping:
