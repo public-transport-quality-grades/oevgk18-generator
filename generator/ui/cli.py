@@ -15,7 +15,6 @@ def setup_cli(params: list, registry: dict) -> None:
 
 
 def _parse_params(params: list) -> Tuple[str, bool]:
-
     parser = argparse.ArgumentParser(description='Generate public transport quality gradings (ÖV-Güteklassen 2018)')
     parser.add_argument('--config', default='generator_config.yml', metavar="filename",
                         help='specify a configuration file location. A default config will be created'
