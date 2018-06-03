@@ -1,7 +1,6 @@
 from typing import List, Dict, Optional
 
 from .business.model.grading import Grading
-from .business.model.isochrone import Isochrone
 from .business.model.public_transport_group import PublicTransportGroup
 from .business.model.stop_category import StopCategory
 from .business.model.stop_grade import StopGrade
@@ -13,4 +12,3 @@ TransportStopGradings = Dict[int, List[Grading]]
 
 DistanceGradeMapping = Dict[float, StopGrade]
 Intervals = Dict[int, Optional[float]]
-Isochrones = Dict[int, List[Isochrone]]

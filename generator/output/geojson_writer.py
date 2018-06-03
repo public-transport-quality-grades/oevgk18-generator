@@ -67,11 +67,6 @@ def _build_feature(geometry: BaseGeometry, properties: dict) -> dict:
     }
 
 
-def _sort_gradings(gradings: List[Grading]) -> List[Grading]:
-    """Sort gradings such that the innermost isochrone is rendered last"""
-    return sorted(gradings, key=lambda grading: grading.isochrone.distance, reverse=True)
-
-
 def _get_grading_properties(uic_ref: int, grade: StopGrade) -> dict:
     return {
         'uic_ref': uic_ref,
