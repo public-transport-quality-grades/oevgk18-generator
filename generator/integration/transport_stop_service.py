@@ -22,17 +22,21 @@ def get_transport_stops(db: Database) -> List[TransportStop]:
 
 
 def _query_transport_stop_rows(db: Database):
-    return db.query("""SELECT distinct s.uic_ref, 
-                            s.stop_name, 
-                            s.stop_lat, s.stop_lon,
-                            array_agg(r.route_type) OVER (partition BY s.uic_ref) AS route_types,
-                            (s.uic_ref in (select uic_ref from intercity_stations)) as is_intercity_station
-                            FROM stops s
-                            INNER JOIN stop_times st ON s.stop_id = st.stop_id
-                            INNER JOIN trips t ON st.trip_id = t.trip_id
-                            INNER JOIN routes r ON t.route_id = r.route_id
+    return db.query("""SELECT DISTINCT
+                          s.uic_ref,
+                          s.stop_name,
+                          s.stop_lat,
+                          s.stop_lon,
+                          array_agg(r.route_type)
+                          OVER (PARTITION BY s.uic_ref) AS route_types,
+                          (s.uic_ref IN (SELECT uic_ref FROM intercity_stations)) as is_intercity_station
+                        FROM stops s
+                          INNER JOIN stop_times st ON s.stop_id = st.stop_id
+                          INNER JOIN trips t ON st.trip_id = t.trip_id
+                          INNER JOIN routes r ON t.route_id = r.route_id
                         WHERE s.stop_id LIKE '85%'
-                        GROUP BY s.uic_ref, s.stop_name, s.stop_lat, s.stop_lon, r.route_type;""").all()
+                        GROUP BY s.uic_ref, s.stop_name, s.stop_lat, s.stop_lon, r.route_type;
+                        """).all()
 
 
 def _map_transport_stop(row: Record) -> TransportStop:
