@@ -27,10 +27,15 @@ BEGIN
   END IF;
 
   FOR nearest_vertex IN
-  SELECT id
-  FROM routing_segmented_vertices_pgr v
-  ORDER BY v.the_geom <#> ST_SetSRID(ST_MakePoint(stop_lon, stop_lat), 4326)
-  LIMIT 100
+    WITH nearest_bboxes AS (
+        SELECT id, the_geom
+        FROM routing_segmented_vertices_pgr v
+        ORDER BY the_geom <#> ST_SetSRID(ST_MakePoint(stop_lon, stop_lat), 4326)
+        LIMIT 100
+    )
+    SELECT id
+    FROM nearest_bboxes
+    ORDER BY ST_Distance(the_geom, ST_SetSRID(ST_MakePoint(stop_lon, stop_lat), 4326))
   LOOP
     SELECT max(agg_cost)
     INTO max_distance
