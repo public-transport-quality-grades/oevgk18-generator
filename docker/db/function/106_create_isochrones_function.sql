@@ -2,11 +2,16 @@ CREATE OR REPLACE FUNCTION isochrones(start_vertex INTEGER, boundaries NUMERIC [
   RETURNS TABLE(distance NUMERIC, polygon GEOMETRY) AS $$
 DECLARE
   start_vertex_geom GEOMETRY;
+  max_boundary      NUMERIC;
 BEGIN
   SELECT the_geom
   INTO start_vertex_geom
   FROM routing_segmented_vertices_pgr
   WHERE id = start_vertex;
+
+  SELECT max(boundary)
+  INTO max_boundary
+  FROM unnest(boundaries) boundary;
 
   CREATE TEMP TABLE edge_preselection ON COMMIT DROP AS (
     SELECT
@@ -21,16 +26,15 @@ BEGIN
 
   CREATE TEMP TABLE distances ON COMMIT DROP AS (
     SELECT
-      id,
-      boundary AS distance,
-      the_geom AS point
-    FROM unnest(boundaries) boundary,
-        LATERAL pgr_drivingDistance(
-            'SELECT id, source, target, cost FROM edge_preselection',
-            start_vertex,
-            boundary,
-            FALSE
-        ) AS isochron
+      vertices.id,
+      vertices.the_geom AS point,
+      isochron.agg_cost as distance
+    FROM pgr_drivingDistance(
+             'SELECT id, source, target, cost FROM edge_preselection',
+             start_vertex,
+             max_boundary,
+             FALSE
+         ) AS isochron
       INNER JOIN routing_segmented_vertices_pgr vertices ON isochron.node = vertices.id
   );
 
@@ -38,7 +42,7 @@ BEGIN
   WITH relevant_bounderies AS (
       SELECT boundary
       FROM unnest(boundaries) boundary, distances d
-      WHERE d.distance = boundary
+      WHERE d.distance <= boundary
       GROUP BY boundary
       HAVING count(d.distance) >= 3
   )
