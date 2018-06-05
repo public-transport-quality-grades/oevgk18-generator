@@ -18,7 +18,8 @@ BEGIN
       id,
       source,
       target,
-      cost_effective AS cost
+      effort AS cost,
+      reverse_effort as reverse_cost
     FROM routing_segmented r
     -- select edges within ~1200 meters from the start vertex
     WHERE ST_intersects(ST_Buffer(start_vertex_geom, 0.013), r.geom_way)
@@ -30,10 +31,10 @@ BEGIN
       vertices.the_geom AS point,
       isochron.agg_cost as distance
     FROM pgr_drivingDistance(
-             'SELECT id, source, target, cost FROM edge_preselection',
+             'SELECT id, source, target, cost, reverse_cost FROM edge_preselection',
              start_vertex,
              max_boundary,
-             FALSE
+             TRUE
          ) AS isochron
       INNER JOIN routing_segmented_vertices_pgr vertices ON isochron.node = vertices.id
   );

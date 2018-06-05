@@ -30,6 +30,7 @@ CREATE TABLE routing_segmented (
   source         INTEGER,
   target         INTEGER,
   cost           DOUBLE PRECISION,
-  cost_effective DOUBLE PRECISION
+  effort         DOUBLE PRECISION,
+  reverse_effort DOUBLE PRECISION
 );
 SELECT AddGeometryColumn('routing_segmented', 'geom_way', 4326, 'LINESTRING', 2);

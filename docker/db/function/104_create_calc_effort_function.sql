@@ -1,5 +1,24 @@
-CREATE OR REPLACE FUNCTION get_effort(gid_input INTEGER)
+CREATE OR REPLACE FUNCTION calc_effective_effort(distance DOUBLE PRECISION,
+                                                 incline_metres_in_altitude DOUBLE PRECISION,
+                                                 decline_metres_in_altitude DOUBLE PRECISION,
+                                                 decline INTEGER)
   RETURNS DOUBLE PRECISION AS $$
+DECLARE
+  effort  DOUBLE PRECISION := 0.0;
+BEGIN
+  effort := distance + (incline_metres_in_altitude / 100) * 1000;
+  IF decline != 0 AND decline_metres_in_altitude / decline > 0.2
+  THEN
+    effort := effort + (decline_metres_in_altitude / 150) * 1000;
+  END IF;
+  RETURN effort;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_effort(gid_input INTEGER)
+  RETURNS RECORD AS $$
 DECLARE
   segment                    RECORD;
   segment_length             INTEGER := 10;
@@ -9,6 +28,8 @@ DECLARE
   incline_metres_in_altitude DOUBLE PRECISION := 0.0;
   decline_metres_in_altitude DOUBLE PRECISION := 0.0;
   effort                     DOUBLE PRECISION := 0.0;
+  reverse_effort             DOUBLE PRECISION := 0.0;
+  ret                        RECORD;
 BEGIN
   FOR segment IN
   SELECT
@@ -34,12 +55,20 @@ BEGIN
   FROM routing_segmented
   WHERE id = gid_input;
 
-  effort := distance + (incline_metres_in_altitude / 100) * 1000;
-  IF decline != 0 AND decline_metres_in_altitude / decline > 0.2
-  THEN
-    effort := effort + (decline_metres_in_altitude / 150) * 1000;
-  END IF;
-  RETURN effort;
+  SELECT calc_effective_effort(distance,
+                               incline_metres_in_altitude,
+                               decline_metres_in_altitude,
+                               decline)
+  INTO effort;
+
+  SELECT calc_effective_effort(distance,
+                               decline_metres_in_altitude,
+                               incline_metres_in_altitude,
+                               incline)
+  INTO reverse_effort;
+
+  SELECT effort, reverse_effort INTO ret;
+  RETURN ret;
 END;
 $$
 LANGUAGE plpgsql;
@@ -49,7 +78,8 @@ CREATE OR REPLACE FUNCTION calc_effort(start_id INTEGER, end_id INTEGER)
   RETURNS VOID AS $$
 BEGIN
   UPDATE routing_segmented
-  SET cost_effective = get_effort(id)
+  SET (effort, reverse_effort) =
+    (SELECT effort, reverse_effort FROM get_effort(id) AS (effort DOUBLE PRECISION, reverse_effort DOUBLE PRECISION))
   WHERE id >= start_id AND id <= end_id;
 END;
 $$
