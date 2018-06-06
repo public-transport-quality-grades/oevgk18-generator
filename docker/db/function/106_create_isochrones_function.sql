@@ -18,8 +18,8 @@ BEGIN
       id,
       source,
       target,
-      effort AS cost,
-      reverse_effort as reverse_cost
+      effort AS reverse_cost, -- reverse directionality to simulate walking towards the public transport stop
+      reverse_effort as cost
     FROM routing_segmented r
     -- select edges within ~1200 meters from the start vertex
     WHERE ST_intersects(ST_Buffer(start_vertex_geom, 0.013), r.geom_way)
