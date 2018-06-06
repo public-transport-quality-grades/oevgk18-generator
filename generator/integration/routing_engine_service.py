@@ -83,30 +83,30 @@ def optimize_stop_vertex_mapping(db: Database):
     transaction.commit()
 
 
-def calc_effective_kilometres(db_config):
+def calc_effort(db_config):
     logger.info("Integrate terrain data into the routing graph")
     cpu_count = os.cpu_count()
     with ThreadPoolExecutor() as executor:
         futures = []
-        for start_id, end_id in _partition_effective_kilometres_calculation(db_config, cpu_count):
+        for start_id, end_id in _partition_effort_calculation(db_config, cpu_count):
             logger.debug(f"Start task with ids from {start_id} to {end_id}")
-            futures.append(executor.submit(_execute_calc_effective_kilometres, db_config, start_id, end_id))
+            futures.append(executor.submit(_execute_calc_effort, db_config, start_id, end_id))
         for future in futures:
             future.result()
             logger.debug("Task completed")
 
 
-def _execute_calc_effective_kilometres(db_config, start_id: int, end_id: int) -> None:
+def _execute_calc_effort(db_config, start_id: int, end_id: int) -> None:
     with db_connection(db_config) as db:
         transaction = db.transaction()
         try:
-            db.query("SELECT calc_effective_kilometres(:start_id, :end_id);", start_id=start_id, end_id=end_id)
+            db.query("SELECT calc_effort(:start_id, :end_id);", start_id=start_id, end_id=end_id)
         except SQLAlchemyError as ex:
-            logger.debug(f"Error in calc_effective_kilometres: {ex}")
+            logger.debug(f"Error in calc_effort: {ex}")
         transaction.commit()
 
 
-def _partition_effective_kilometres_calculation(db_config, partitions: int) -> Iterable:
+def _partition_effort_calculation(db_config, partitions: int) -> Iterable:
     with db_connection(db_config) as db:
         row_ids = db.query("SELECT id FROM routing_segmented ORDER BY id;").all()
         routing_ids: List[int] = list(map(lambda row: row.id, row_ids))
