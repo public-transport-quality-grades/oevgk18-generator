@@ -55,8 +55,8 @@ def get_all_departure_times(db_config: dict, due_date: datetime) -> Dict[int, Li
                                 FROM stop_times st
                                   INNER JOIN stops s ON st.stop_id = s.stop_id
                                   INNER JOIN trips t ON st.trip_id = t.trip_id
-                                  INNER JOIN calendar_dates c ON t.service_id = c.service_id
-                                WHERE c.date = :date
+                                  LEFT JOIN calendar_dates c ON t.service_id = c.service_id
+                                WHERE c.date = :date OR t.service_id = '000000'
                             )
                             SELECT
                               uic_ref,
@@ -64,6 +64,7 @@ def get_all_departure_times(db_config: dict, due_date: datetime) -> Dict[int, Li
                             FROM calendar_trip_mapping
                             GROUP BY uic_ref""",
                         date=due_date_gtfs).all()
+        # service_id 000000 represents the whole schedule
         return {row['uic_ref']: _combine_departure_time(row, due_date) for row in rows}
 
 
