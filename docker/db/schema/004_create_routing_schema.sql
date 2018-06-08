@@ -25,7 +25,7 @@ SELECT AddGeometryColumn('routing', 'geom_way', 4326, 'LINESTRING', 2);
 
 DROP TABLE IF EXISTS routing_segmented;
 CREATE TABLE routing_segmented (
-  id             SERIAL,
+  id             SERIAL PRIMARY KEY,
   osm_id         INTEGER,
   source         INTEGER,
   target         INTEGER,

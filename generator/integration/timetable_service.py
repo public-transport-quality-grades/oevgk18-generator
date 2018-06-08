@@ -46,26 +46,61 @@ def get_count_of_distinct_next_stops(db: Database, relevant_stops: List[str]) ->
 
 
 def get_all_departure_times(db_config: dict, due_date: datetime) -> Dict[int, List[datetime]]:
-    due_date_gtfs: str = _format_gtfs_date(due_date)
     with db_connection(db_config) as db:
-        rows = db.query("""WITH calendar_trip_mapping AS (
-                                SELECT
-                                  st.departure_time,
-                                  s.uic_ref
-                                FROM stop_times st
-                                  INNER JOIN stops s ON st.stop_id = s.stop_id
-                                  INNER JOIN trips t ON st.trip_id = t.trip_id
-                                  LEFT JOIN calendar_dates c ON t.service_id = c.service_id
-                                WHERE c.date = :date OR t.service_id = '000000'
-                            )
+        departure_times: Dict[int, List[datetime]] = _query_stop_times_departures(db, due_date)
+        stop_frequency_departures: Dict[int, List[datetime]] = _query_frequency_departure_times(db, due_date)
+
+    for uic_ref, frequency_departures in stop_frequency_departures.items():
+        if uic_ref in departure_times:
+            departure_times[uic_ref].extend(frequency_departures)
+        else:
+            departure_times[uic_ref] = frequency_departures
+    return departure_times
+
+
+def _query_stop_times_departures(db: Database, due_date: datetime) -> Dict[int, List[datetime]]:
+    due_date_gtfs: str = _format_gtfs_date(due_date)
+    rows = db.query("""WITH calendar_trip_mapping AS (
                             SELECT
-                              uic_ref,
-                              array_agg(departure_time) AS departure_times
-                            FROM calendar_trip_mapping
-                            GROUP BY uic_ref""",
-                        date=due_date_gtfs).all()
-        # service_id 000000 represents the whole schedule
-        return {row['uic_ref']: _combine_departure_time(row, due_date) for row in rows}
+                              st.departure_time,
+                              s.uic_ref
+                            FROM stop_times st
+                              INNER JOIN stops s ON st.stop_id = s.stop_id
+                              INNER JOIN trips t ON st.trip_id = t.trip_id
+                              INNER JOIN calendar_dates c ON t.service_id = c.service_id
+                            WHERE NOT EXISTS(SELECT 1
+                                             FROM frequencies f
+                                             WHERE f.trip_id = t.trip_id) 
+                                  AND (c.date = :date OR t.service_id = '000000')
+                        )
+                        SELECT
+                          uic_ref,
+                          array_agg(departure_time) AS departure_times
+                        FROM calendar_trip_mapping
+                        GROUP BY uic_ref""",
+                    date=due_date_gtfs).all()
+    # service_id 000000 represents the whole schedule
+    return {row['uic_ref']: _combine_departure_time(row, due_date) for row in rows}
+
+
+def _query_frequency_departure_times(db: Database, due_date: datetime) -> Dict[int, List[datetime]]:
+    """Get departure times for stops which have trips that are modeled in the frequencies table"""
+    due_date_gtfs: str = _format_gtfs_date(due_date)
+    rows = db.query("""SELECT
+                    s.uic_ref,
+                    array_agg(st.departure_time + (INTERVAL '1s' * intervals)) AS departure_times
+                  FROM stop_times st
+                    INNER JOIN frequencies f on st.trip_id = f.trip_id
+                    INNER JOIN trips t on f.trip_id = t.trip_id
+                    INNER JOIN stops s on st.stop_id = s.stop_id
+                    INNER JOIN calendar_dates c ON t.service_id = c.service_id,
+                  generate_series(0, 86400, f.headway_secs) intervals
+
+                  WHERE c.date = :date AND
+                        (st.departure_time + (INTERVAL '1s' * intervals)) <= f.end_time
+                  GROUP BY s.uic_ref""",
+                    date=due_date_gtfs).all()
+    return {row['uic_ref']: _combine_departure_time(row, due_date) for row in rows}
 
 
 def _format_gtfs_date(due_date: datetime) -> str:
