@@ -23,7 +23,7 @@ def test_get_stop_categories(monkeypatch):
     expected_stop_categories = {
         8503400: StopCategory.I,
         8503125: StopCategory.IV,
-        8591382: StopCategory.VII,
+        8591382: None,
         8593245: None
     }
 
