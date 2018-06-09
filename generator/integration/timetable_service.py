@@ -93,11 +93,11 @@ def _query_frequency_departure_times(db: Database, due_date: datetime) -> Dict[i
                     INNER JOIN frequencies f on st.trip_id = f.trip_id
                     INNER JOIN trips t on f.trip_id = t.trip_id
                     INNER JOIN stops s on st.stop_id = s.stop_id
-                    INNER JOIN calendar_dates c ON t.service_id = c.service_id,
+                    LEFT JOIN calendar_dates c ON t.service_id = c.service_id,
                   generate_series(0, 86400, f.headway_secs) intervals
 
-                  WHERE c.date = :date AND
-                        (st.departure_time + (INTERVAL '1s' * intervals)) <= f.end_time
+                  WHERE (st.departure_time + (INTERVAL '1s' * intervals)) <= f.end_time
+                    AND (c.date = :date OR t.service_id = '000000')
                   GROUP BY s.uic_ref""",
                     date=due_date_gtfs).all()
     return {row['uic_ref']: _combine_departure_time(row, due_date) for row in rows}
