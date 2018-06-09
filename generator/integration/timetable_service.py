@@ -67,7 +67,7 @@ def _query_stop_times_departures(db: Database, due_date: datetime) -> Dict[int, 
                             FROM stop_times st
                               INNER JOIN stops s ON st.stop_id = s.stop_id
                               INNER JOIN trips t ON st.trip_id = t.trip_id
-                              INNER JOIN calendar_dates c ON t.service_id = c.service_id
+                              LEFT JOIN calendar_dates c ON t.service_id = c.service_id
                             WHERE NOT EXISTS(SELECT 1
                                              FROM frequencies f
                                              WHERE f.trip_id = t.trip_id) 
