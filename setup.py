@@ -15,7 +15,7 @@ setup(
     url='https://github.com/public-transport-quality-grades/oevgk18-generator',
     license="MIT License",
     packages=find_packages(exclude=('tests')),
-    install_requires=['Shapely', 'Rtree', 'geojson', 'records'],
+    install_requires=['Shapely', 'geojson', 'records'],
     entry_points={
         'console_scripts': [
             'oevgk18_generator=generator.__main__:main'

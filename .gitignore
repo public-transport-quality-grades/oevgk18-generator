@@ -117,3 +117,4 @@ generator_config.yml
 
 # results
 results/
+docker/generator-results/
