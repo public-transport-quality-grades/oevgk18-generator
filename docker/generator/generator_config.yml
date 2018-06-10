@@ -1,0 +1,125 @@
+
+database-connections:
+    # default connection string inside docker
+    public-transport-stops: "postgres://oevgk18user:xkGVsHsTHnkW9wpD@db:5432/oevgk18"
+    
+isochrones:
+    max-relevant-distance: 1280 # 900s * 1.4m/s = 1280m
+    edge-segment-length: 30 # segment size in meters with which the graph will be split up. The lower, the more accurate
+    walking-speed: 1.4 # m/s
+
+output:
+    output-directory: "results/"
+    metadata-filename: "oevgk18_metadata.json"
+    transport-stops-filename: "transport_stops.geojson"
+due-dates:
+    - type-of-day: "Werktag"
+      type-of-interval: "Tag"
+      due-date: "2018-11-13"
+      lower-bound: '06:00'
+      upper-bound: '20:00'
+
+    - type-of-day: "Werktag"
+      type-of-interval: "Abend"
+      due-date: "2018-11-13"
+      lower-bound: '20:00'
+      upper-bound: '00:00'
+
+    - type-of-day: "Samstag"
+      type-of-interval: "Tag"
+      due-date: "2018-11-10"
+      lower-bound: '06:00'
+      upper-bound: '20:00'
+
+    - type-of-day: "Samstag"
+      type-of-interval: "Nacht"
+      due-date: "2018-11-10"
+      lower-bound: '01:00'
+      upper-bound: '04:00'
+
+    - type-of-day: "Sonntag"
+      type-of-interval: "Tag"
+      due-date: "2018-11-18"
+      lower-bound: '06:00'
+      upper-bound: '20:00'
+
+    - type-of-day: "Sonntag"
+      type-of-interval: "Nacht"
+      due-date: "2018-11-18"
+      lower-bound: '01:00'
+      upper-bound: '04:00'
+
+public-transport-types:
+    train-junction-min-directions: 6 # Minimum amount of directions for a train station to be called a train junction ("Bahnknoten")
+
+transport-stop-categories:
+    - max-interval: 300 # seconds
+      transport-type-mappings:
+          - A: 1 # i.e. types of transports in category A are in transport stop category I
+          - B: 1
+          - C: 2
+
+    - min-interval: 300
+      max-interval: 600
+      transport-type-mappings:
+          - A: 1
+          - B: 2
+          - C: 3
+
+    - min-interval: 600
+      max-interval: 1200
+      transport-type-mappings:
+          - A: 2
+          - B: 3
+          - C: 4
+    
+    - min-interval: 1200
+      max-interval: 2400
+      transport-type-mappings:
+          - A: 3
+          - B: 4
+          - C: 5
+    
+    - min-interval: 2400
+      max-interval: 3600
+      transport-type-mappings:
+          - A: 4
+          - B: 5
+          - C: 6
+    
+    - min-interval: 3600
+      transport-type-mappings:
+          - B: 7
+          - C: 7
+
+public-transport-ratings:
+    - max-seconds: 300
+      transport-stop-categories:
+          - 1: 'A' # i.e. transport stop category I gets a transport stop rating 'A'
+          - 2: 'A'
+          - 3: 'B'
+          - 4: 'C'
+          - 5: 'D'
+          - 6: 'E'
+          - 7: 'F'
+    
+    - max-seconds: 450
+      transport-stop-categories:
+          - 1: 'A'
+          - 2: 'B'
+          - 3: 'C'
+          - 4: 'D'
+          - 5: 'E'
+    
+    - max-seconds: 600
+      transport-stop-categories:
+          - 1: 'B'
+          - 2: 'C'
+          - 3: 'D'
+          - 4: 'E'
+    
+    - max-seconds: 900
+      transport-stop-categories:
+          - 1: 'C'
+          - 2: 'D'
+          - 3: 'E'
