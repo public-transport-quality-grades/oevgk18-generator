@@ -24,5 +24,12 @@ services:
       - sql-import:/sql-import
     depends_on: [db]
 
+  generator:
+    build:
+      context: ../
+    volumes:
+      - ./generator:/generator
+    depends_on: [db]
+
 volumes:
   sql-import:
