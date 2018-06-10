@@ -113,7 +113,8 @@ ENV/
 *.pbf
 
 # config
-generator_config.yml
+./generator_config.yml
 
 # results
 results/
+docker/generator/results
