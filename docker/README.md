@@ -56,6 +56,6 @@ docker-compose run generator oevgk18_generator
 
 To see a usage guide of the command, simply run `docker-compose run generator`
 
-The default configuration file is <generator/generator_config.yml>. The settings can be adjusted and the generator re-run with the same command.
+The default configuration file is [generator/generator_config.yml](generator/generator_config.yml). The settings can be adjusted and the generator re-run with the same command.
 
 After the command has been completed, the resulting files will be stored as GeoJSON inside the `generator/results` folder. To get a web application up and running with this data, see to the [web-app repository](https://github.com/public-transport-quality-grades/web-app)
