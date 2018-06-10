@@ -1,3 +1,4 @@
 docker/
 results/
 generator_config.yml
+Dockerfile
