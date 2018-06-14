@@ -18,6 +18,12 @@ docker-compose up -d
 ```
 
 ## Database setup
+
+### Optional: Update intercity railway stations
+
+Inside the [db](https://github.com/public-transport-quality-grades/oevgk18-generator/tree/master/docker/db) folder is a [csv file](https://github.com/public-transport-quality-grades/oevgk18-generator/blob/master/docker/db/intercity_railway_stations.csv) with all the railway stations which have an intercity connection.
+If you wish to update this data, see the [README](https://github.com/public-transport-quality-grades/oevgk18-generator/tree/master/docker/db)
+
 ### Updating GTFS data
 
 The first command automatically downloads the public transport schedule from <http://gtfs.geops.ch/>. The second commands imports sets up the database table and imports the timetable data.
